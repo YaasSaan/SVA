@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CargoOps V2 — Air France Cargo</title>
+<style>
+:root{--af-blue2:#0068CC;--af-red:#CD2033;--af-gold:#C9A84C;--bg:#F8F9FB;--bg2:#FFFFFF;--surface:#FAFAFA;--surface2:#F0F0F0;--border:#E8E8E8;--border2:#D0D0D0;--text:#1A1A1A;--text2:#555;--text3:#999;--green:#2DB87A;--red:#CD2033;--amber:#C9A84C;--cyan:#4CA8E0;--r:8px;--font:'Segoe UI',system-ui,-apple-system,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;display:flex;flex-direction:column;overflow:hidden}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}@keyframes fadeInUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes slideIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}@keyframes modalIn{from{transform:scale(.96) translateY(12px);opacity:0}to{transform:none;opacity:1}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes savePulse{0%{opacity:0;transform:translateY(4px)}20%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#D8D8D8;border-radius:4px}::-webkit-scrollbar-track{background:transparent}
+.topbar{height:54px;background:var(--bg2);border-bottom:1px solid var(--border);border-top:3px solid var(--af-red);display:flex;align-items:center;padding:0 20px;gap:18px;flex-shrink:0;z-index:100}.topbar .logo{display:flex;align-items:center;gap:10px}.topbar .logo-icon{width:32px;height:32px;border-radius:8px;object-fit:cover}.topbar .logo-text{font-weight:700;font-size:14px;color:var(--af-blue2);letter-spacing:2px}.topbar-clock{font-size:20px;font-weight:700;color:#1A1A1A;letter-spacing:2px}.topbar-date{font-size:11px;color:var(--text3)}.save-indicator{font-size:11px;font-weight:700;color:var(--green);display:none;align-items:center;gap:4px;animation:savePulse 1.5s ease forwards}.save-indicator.show{display:flex}.topbar-right{margin-left:auto;display:flex;align-items:center;gap:16px}.airport-code{font-size:24px;font-weight:500;color:#1A1A1A;letter-spacing:4px;font-style:italic}.user-badge{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .15s}.user-badge:hover{border-color:var(--af-blue2);background:#F0F4FF}.user-badge:hover .avatar{background:#005bb5}.avatar{width:28px;height:28px;border-radius:50%;background:var(--af-blue2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+.app-body{display:flex;flex:1;overflow:hidden}.sidebar{width:60px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;flex-shrink:0}.sid-btn{width:42px;height:42px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all .15s;color:var(--text3);border:1px solid transparent;background:transparent}.sid-btn:hover{background:var(--surface);color:var(--text)}.sid-btn.active{background:#F0F4FF;color:var(--af-blue2);border-color:rgba(0,104,204,.15)}.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.dash-header{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:flex-end;gap:20px;flex-shrink:0}.dash-title{font-size:18px;font-weight:600;font-style:italic}.dash-sub{font-size:11.5px;color:var(--text3);margin-top:2px}.kpi-mini-row{display:flex;gap:10px;margin-left:auto}.kpi-mini{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:6px 14px;text-align:center;min-width:75px}.kpi-mini-val{font-size:17px;font-weight:700}.kpi-mini-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+.filter-bar{padding:10px 20px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}.filter-btn{padding:5px 14px;border-radius:20px;font-size:11.5px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:var(--font);transition:all .15s}.filter-btn:hover{border-color:var(--border2);color:var(--text)}.filter-btn.active{background:var(--af-blue2);border-color:var(--af-blue2);color:#fff}
+.date-picker-bar{display:flex;align-items:center;gap:6px;margin-left:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:4px 10px}.date-picker-bar input{background:transparent;border:none;outline:none;font-size:12.5px;color:var(--text);font-family:var(--font);cursor:pointer}.date-picker-bar .date-nav{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text3);padding:2px 4px;border-radius:4px}.date-picker-bar .date-nav:hover{background:var(--surface2);color:var(--text)}.date-picker-bar .date-today{background:var(--af-blue2);color:#fff;border:none;border-radius:4px;font-size:10px;padding:3px 8px;cursor:pointer;font-weight:600;font-family:var(--font)}
+.search-box{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:5px 12px}.search-box input{background:transparent;border:none;outline:none;font-size:12.5px;color:var(--text);font-family:var(--font);width:140px}.search-box input::placeholder{color:var(--text3)}
+.add-btn,.import-btn{padding:7px 14px;border:none;border-radius:var(--r);color:#fff;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer;display:flex;align-items:center;gap:5px;letter-spacing:.3px}.add-btn{background:var(--af-red)}.add-btn:hover{background:#a8172a}.import-btn{background:var(--af-blue2)}.import-btn:hover{background:#005bb5}
+.content-area{flex:1;display:flex;overflow:hidden}.flights-panel{flex:1;overflow-y:auto;padding:16px 20px}
+.flight-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .18s;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}.flight-card:hover{border-color:var(--border2);transform:translateX(2px)}.flight-card.selected{border-color:var(--af-gold);box-shadow:0 2px 12px rgba(201,168,76,.12);background:#FAFBFF}.flight-card.selected .fc-accent{display:block}.fc-accent{display:none;height:2.5px;background:linear-gradient(90deg,var(--af-red),var(--af-gold))}.fc-main{display:flex;align-items:center;padding:14px 16px;gap:16px}.status-stripe{width:3px;height:44px;border-radius:2px;flex-shrink:0}.status-stripe.prevu{background:var(--text3)}.status-stripe.encours{background:var(--af-gold);box-shadow:0 0 8px rgba(201,168,76,.4)}.status-stripe.cloture{background:var(--green)}.status-stripe.alerte{background:var(--af-red);box-shadow:0 0 8px rgba(205,32,51,.4)}
+.fc-num{min-width:85px}.fc-num-val{font-size:17px;font-weight:700;letter-spacing:.3px}.fc-num-co{font-size:10px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}.fc-route{display:flex;align-items:center;gap:8px;min-width:120px}.fc-iata{font-size:18px;font-weight:600;letter-spacing:1px}.fc-iata.dest{color:var(--cyan)}.fc-arrow{color:var(--text);font-size:14px}
+.fc-times{min-width:70px}.fc-time-row{display:flex;gap:6px;align-items:baseline}.fc-time-label{font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.5px;width:22px}.fc-time-val{font-size:13px;font-weight:700}
+.fc-aircraft{min-width:90px}.fc-ac-type{font-size:12px;font-weight:600}
+.fc-weight{min-width:110px;flex:1}.fc-weight-info{display:flex;justify-content:space-between;margin-bottom:4px}.fc-weight-text{font-size:11px;color:var(--text2)}.fc-weight-pct{font-size:11px;font-weight:700}.fc-bar-bg{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}.fc-bar-fill{height:100%;border-radius:3px;transition:width .5s}
+.status-badge{padding:4px 12px;border-radius:20px;font-size:10.5px;font-weight:700;letter-spacing:.5px;white-space:nowrap}.status-badge.prevu{background:rgba(123,139,163,.1);color:#7B8BA3;border:1px solid rgba(123,139,163,.25)}.status-badge.encours{background:rgba(201,168,76,.1);color:var(--amber);border:1px solid rgba(201,168,76,.3)}.status-badge.cloture{background:rgba(45,184,122,.1);color:var(--green);border:1px solid rgba(45,184,122,.3)}.status-badge.alerte{background:rgba(205,32,51,.12);color:var(--red);border:1px solid rgba(205,32,51,.35);animation:blink 1.5s infinite}
+.side-panel{width:340px;min-width:340px;border-left:1px solid var(--border);background:#FCFCFC;display:none;flex-direction:column;overflow:hidden;animation:slideIn .2s ease}.side-panel.open{display:flex}.sp-body{flex:1;overflow-y:auto;padding:16px}.sp-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}.sp-cell{background:var(--surface);border:1px solid #ECECEC;border-radius:var(--r);padding:10px 13px}.sp-cell-label{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}.sp-cell-val{font-size:15px;font-weight:700}.sp-actions{display:flex;gap:6px}.sp-action-btn{flex:1;padding:7px 10px;border-radius:var(--r);font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.3px;border:1px solid;transition:all .15s;background:transparent;font-family:var(--font);text-align:center}.sp-action-btn.edit{border-color:rgba(201,168,76,.25);color:var(--text)}.sp-action-btn.edit:hover{background:rgba(201,168,76,.08)}.sp-action-btn.delete{border-color:rgba(205,32,51,.2);color:var(--red)}.sp-action-btn.delete:hover{background:rgba(205,32,51,.06)}.sp-action-btn.detail{border-color:rgba(0,104,204,.2);color:var(--af-blue2)}.sp-action-btn.detail:hover{background:rgba(0,104,204,.06)}
+.sp-perf-section{margin-top:16px;padding-top:14px;border-top:2px solid var(--af-gold)}.sp-perf-title{font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px}.sp-perf-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}.sp-perf-label{font-size:11px;color:var(--text2);min-width:85px}.sp-perf-bar{flex:1;height:7px;background:var(--surface2);border-radius:4px;overflow:hidden}.sp-perf-fill{height:100%;border-radius:4px}.sp-perf-val{font-size:11px;font-weight:700;min-width:50px;text-align:right}
+.sp-score{text-align:center;padding:14px;background:var(--surface);border:1px solid #ECECEC;border-radius:10px;margin-top:12px}.sp-score-val{font-size:36px;font-weight:800;line-height:1}.sp-score-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px}.modal-overlay.open{display:flex;animation:fadeIn .2s ease}.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;max-width:95vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.18);animation:modalIn .25s ease}.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.modal-title{font-size:18px;font-weight:600;color:var(--text);font-style:italic}.modal-close{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text3);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}.modal-close:hover{background:rgba(205,32,51,.1);color:var(--red)}.modal-body{padding:20px 24px;overflow-y:auto;flex:1}.modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid var(--border)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-group{display:flex;flex-direction:column;gap:5px}.form-group.full{grid-column:1/-1}.form-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;font-weight:600}.form-input{padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:13px;outline:none;font-weight:500;font-family:var(--font)}.form-input:focus{border-color:var(--af-blue2)}.form-separator{grid-column:1/-1;border:none;border-top:2px solid var(--af-gold);margin:6px 0;opacity:.4}.form-section-title{grid-column:1/-1;font-size:10px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.7px;margin-top:4px}.btn{padding:9px 20px;border-radius:var(--r);font-size:13px;cursor:pointer;font-weight:600;font-family:var(--font)}.btn-cancel{background:var(--bg2);border:1px solid var(--border);color:var(--text2)}.btn-cancel:hover{background:var(--surface)}.btn-primary{background:var(--af-red);border:none;color:#fff;font-weight:800}.btn-primary:hover{background:#a8172a}
+/* DETAIL TABLE */
+.detail-stats{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap}.detail-stat{background:var(--surface);border:1px solid #ECECEC;border-radius:var(--r);padding:10px 16px;text-align:center;min-width:100px}.detail-stat-val{font-size:20px;font-weight:800;line-height:1}.detail-stat-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.uld-table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}.uld-table thead th{background:var(--af-blue2);color:#fff;padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:0}.uld-table thead th:first-child{border-radius:8px 0 0 0}.uld-table thead th:last-child{border-radius:0 8px 0 0}.uld-table tbody td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text2)}.uld-table tbody tr:hover td{background:#F5F7FF}.uld-table tbody tr:last-child td:first-child{border-radius:0 0 0 8px}.uld-table tbody tr:last-child td:last-child{border-radius:0 0 8px 0}.uld-table .uld-name{font-weight:700;color:var(--text)}.uld-table .uld-weight{font-weight:700;color:var(--text)}.uld-table .uld-bulk{background:rgba(201,168,76,.05);font-style:italic}
+.uld-table tfoot td{padding:10px;font-weight:800;background:var(--surface);border-top:2px solid var(--af-gold)}
+/* GANTT */
+.gantt-panel{border-top:2px solid var(--af-gold);background:var(--bg2);flex-shrink:0;display:flex;flex-direction:column;height:215px;transition:height .2s ease}
+.gantt-panel.collapsed{height:36px;overflow:hidden}
+.gantt-header{height:36px;min-height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;user-select:none;gap:12px;cursor:pointer}
+.gantt-header:hover{background:var(--surface)}
+.gantt-legend{display:flex;gap:10px;align-items:center}
+.gantt-legend-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text3);font-weight:600}
+.gantt-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.gantt-body{flex:1;overflow:auto}
+.gantt-inner{min-width:620px;position:relative}
+.gantt-axis-row{display:flex;height:26px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:5}
+.gantt-row{display:flex;height:44px;border-bottom:1px solid var(--border)}
+.gantt-label{width:120px;min-width:120px;padding:4px 8px;border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;background:var(--bg2);position:sticky;left:0;z-index:3;overflow:hidden}
+.gantt-track{flex:1;position:relative;overflow:hidden}
+/* CALENDAR */
+.calendar-view{flex:1;overflow-y:auto;padding:28px 32px;background:var(--bg)}.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}.cal-title{font-size:22px;font-weight:700;font-style:italic}.cal-nav{display:flex;align-items:center;gap:8px}.cal-nav-btn{width:36px;height:36px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text2)}.cal-nav-btn:hover{background:var(--surface2);color:var(--text)}.cal-today-btn{padding:6px 16px;border-radius:var(--r);border:1px solid var(--af-blue2);background:var(--af-blue2);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)}.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden}.cal-day-header{background:var(--bg2);padding:10px;text-align:center;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px}.cal-cell{background:var(--bg2);min-height:100px;padding:6px 8px;cursor:pointer;transition:background .15s}.cal-cell:hover{background:#F5F7FF}.cal-cell.other-month{background:var(--surface);opacity:.5}.cal-cell.today{background:#FFFBF0;box-shadow:inset 0 0 0 2px var(--af-gold)}.cal-cell.selected{background:#F0F4FF;box-shadow:inset 0 0 0 2px var(--af-blue2)}.cal-cell-num{font-size:12px;font-weight:700;margin-bottom:4px}.cal-cell.today .cal-cell-num{color:var(--text)}.cal-cell.other-month .cal-cell-num{color:var(--text3)}.cal-flight-dot{padding:2px 5px;border-radius:4px;font-size:9px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}.cal-flight-dot.prevu{background:#7B8BA3}.cal-flight-dot.encours{background:var(--amber)}.cal-flight-dot.cloture{background:var(--green)}.cal-flight-dot.alerte{background:var(--red)}.cal-more{font-size:9px;color:var(--text3);font-weight:600;margin-top:2px}.cal-day-detail{margin-top:20px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px}.cal-day-detail-title{font-size:15px;font-weight:700;margin-bottom:14px;font-style:italic}.cal-day-flight{display:flex;align-items:center;gap:14px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px;cursor:pointer}.cal-day-flight:hover{border-color:var(--af-gold);background:#FAFBFF}
+/* DASHBOARD */
+.dashboard-view{display:none;flex:1;overflow-y:auto;padding:28px 32px;background:var(--bg)}.dashboard-view.active{display:block}.db-title{font-size:22px;font-weight:700;font-style:italic;margin-bottom:4px}.db-sub{font-size:12px;color:var(--text3);margin-bottom:16px}
+.db-filters{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:10px}.db-filter-group{display:flex;flex-direction:column;gap:3px}.db-filter-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}.db-filter-input{padding:6px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text);font-family:var(--font);outline:none}.db-filter-input:focus{border-color:var(--af-blue2)}.db-filter-btn{padding:6px 14px;background:var(--af-blue2);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);align-self:flex-end}.db-filter-btn:hover{background:#005bb5}.db-filter-reset{padding:6px 14px;background:transparent;color:var(--text3);border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);align-self:flex-end}.db-filter-reset:hover{background:var(--surface)}
+.db-kpi-row{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}.db-kpi{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;flex:1;min-width:130px;position:relative;overflow:hidden}.db-kpi-accent{position:absolute;top:0;left:0;right:0;height:3px;opacity:.7}.db-kpi-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}.db-kpi-val{font-size:26px;font-weight:800;letter-spacing:-1px;line-height:1}.db-kpi-sub{font-size:11px;color:var(--text3);margin-top:4px}.db-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}.db-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;overflow:hidden}.db-card.full{grid-column:1/-1}.db-card-title{font-size:13px;font-weight:700;color:#333;margin-bottom:16px;text-transform:uppercase;letter-spacing:.5px}.db-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}.db-bar-label{font-size:11.5px;color:var(--text2);min-width:80px}.db-bar-track{flex:1;height:9px;background:var(--surface2);border-radius:5px;overflow:hidden}.db-bar-fill{height:100%;border-radius:5px}.db-bar-val{font-size:11px;color:var(--text2);min-width:55px;text-align:right}.db-donut-legend{display:flex;flex-direction:column;gap:8px}.db-donut-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}.db-donut-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}.empty-state .icon{font-size:36px;margin-bottom:12px;opacity:.5}
+.view-section{display:none;flex-direction:column;flex:1;overflow:hidden}.view-section.active{display:flex}
+.import-result{margin-top:16px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px}.import-result h3{font-size:14px;color:var(--text);margin-bottom:10px;font-style:italic}.import-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.import-result-item{padding:8px 12px;background:var(--bg2);border-radius:6px;border:1px solid #ECECEC}.import-result-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}.import-result-val{font-size:16px;font-weight:700;margin-top:2px}
+/* CHAT / COMMUNICATION */
+.fc-chat-badge{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text2);margin-top:3px;font-weight:700}.fc-chat-badge .chat-notif-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}.fc-chat-badge .urgent-dot{background:var(--red);animation:blink 1s infinite}.fc-chat-badge .unseen-dot{background:var(--amber);animation:blink 2s infinite}
+.sp-chat-section{margin-top:16px;padding-top:14px;border-top:2px solid var(--af-blue2)}.sp-chat-title{font-size:11px;font-weight:700;color:var(--af-blue2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.chat-messages{max-height:220px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:6px}
+.chat-msg{padding:8px 10px;border-radius:8px;font-size:13px;line-height:1.4;position:relative;border:1px solid transparent}
+.chat-msg.info{background:rgba(0,104,204,.06);border-color:rgba(0,104,204,.12);color:var(--text)}
+.chat-msg.warning{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.2);color:var(--text)}
+.chat-msg.urgent{background:rgba(205,32,51,.06);border-color:rgba(205,32,51,.18);color:var(--text)}
+.chat-msg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.chat-msg-author{font-size:10px;font-weight:700;color:var(--text2)}
+.chat-msg-time{font-size:9px;color:var(--text3)}
+.chat-msg-prio{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:1px 5px;border-radius:3px;display:inline-block;margin-left:5px}
+.chat-msg-prio.info{background:rgba(0,104,204,.1);color:var(--af-blue2)}
+.chat-msg-prio.warning{background:rgba(201,168,76,.15);color:var(--amber)}
+.chat-msg-prio.urgent{background:rgba(205,32,51,.12);color:var(--red)}
+.chat-msg-text{font-size:13px;color:var(--text);word-break:break-word}
+.detail-chat-msgs .chat-msg-text{font-size:16px}
+.chat-msg-delete{position:absolute;top:4px;right:6px;background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;opacity:0;transition:opacity .15s;padding:2px}.chat-msg:hover .chat-msg-delete{opacity:1}.chat-msg-delete:hover{color:var(--red)}
+.chat-input-area{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px}
+.chat-input-row{display:flex;gap:6px;align-items:center}
+.chat-input{flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;outline:none;font-family:var(--font);color:var(--text);background:var(--bg2);resize:none;min-height:32px;max-height:60px}
+.chat-input:focus{border-color:var(--af-blue2)}
+.chat-input::placeholder{color:var(--text3)}
+.chat-prio-select{padding:4px 6px;border:1px solid var(--border);border-radius:6px;font-size:10px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;cursor:pointer;font-weight:600}
+.chat-author-input{padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:10px;font-family:var(--font);background:var(--bg2);color:var(--text);outline:none;width:80px}
+.dest-toggle-group{display:flex;gap:3px;flex-wrap:wrap;align-items:center}
+.dest-toggle-btn{padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid;background:transparent;font-family:var(--font);transition:all .15s;opacity:.45;line-height:1.4}
+.dest-toggle-btn:hover{opacity:.75}
+.dest-toggle-btn.active{color:#fff!important;opacity:1}
+.chat-dest-tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.3px;margin-left:4px}
+.chat-dest-tag.all{background:rgba(0,104,204,.1);color:var(--af-blue2)}
+.chat-dest-tag.ppd{background:rgba(205,32,51,.08);color:var(--red)}
+.chat-dest-tag.mag{background:rgba(201,168,76,.12);color:var(--amber)}
+.chat-dest-tag.pta{background:rgba(45,184,122,.1);color:var(--green)}
+.chat-dest-tag.pto{background:rgba(76,168,224,.1);color:var(--cyan)}
+.chat-dest-tag.gfc{background:rgba(123,139,163,.1);color:#7B8BA3}
+.chat-msg-ack{padding:3px 8px;background:rgba(45,184,122,.08);border:1px solid rgba(45,184,122,.2);border-radius:4px;font-size:9px;font-weight:700;color:var(--green);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:3px;margin-top:5px}
+.chat-msg-ack:hover{background:rgba(45,184,122,.15)}
+.chat-msg-ack.seen{background:rgba(45,184,122,.1);border-color:rgba(45,184,122,.25);cursor:default;opacity:.7}
+.chat-msg.urgent.seen-msg{opacity:.65;border-style:dashed}
+.chat-msg.for-me{border-left:3px solid var(--af-blue2)}
+/* DETAIL FULL VIEW */
+.detail-full{display:flex;height:100%;width:100%;gap:0}
+.detail-left{width:60%;display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)}
+.detail-right{width:40%;display:flex;flex-direction:column;overflow:hidden;background:#FBFCFD}
+.detail-topbar{display:flex;align-items:center;gap:16px;padding:14px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.detail-topbar-num{font-size:22px;font-weight:700;color:var(--text);font-style:italic}
+.detail-topbar-route{font-size:14px;color:var(--text2);font-weight:600}
+.detail-topbar-info{font-size:11px;color:var(--text3)}
+.detail-stats-bar{display:flex;gap:8px;padding:10px 20px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg2)}
+.detail-stat-box{background:var(--surface);border:1px solid #ECECEC;border-radius:8px;padding:8px 10px;text-align:center;flex:1}
+.detail-stat-box-val{font-size:18px;font-weight:800;line-height:1}
+.detail-stat-box-label{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+.detail-stat-box-bar{height:4px;background:#ECECEC;border-radius:2px;margin-top:6px;overflow:hidden}
+.detail-stat-box-fill{height:100%;border-radius:2px}
+.detail-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg2)}
+.detail-tab{padding:10px 20px;font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;text-transform:uppercase;letter-spacing:.5px}
+.detail-tab:hover{color:var(--text);background:var(--surface)}
+.detail-tab.active{color:var(--af-blue2);border-bottom-color:var(--af-blue2)}
+.detail-tab-content{flex:1;overflow-y:auto;padding:16px 20px}
+.uld-add-row{display:flex;gap:5px;margin-bottom:12px;align-items:center}
+.uld-add-input{padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:11px;font-family:var(--font);color:var(--text);background:var(--bg2);outline:none;flex-shrink:0}
+.uld-add-input:focus{border-color:var(--af-blue2)}
+.uld-add-input.uld-name{width:130px;text-transform:uppercase;font-weight:600}
+.uld-add-input.uld-num{width:70px}
+.uld-add-btn{padding:7px 14px;background:var(--af-blue2);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)}
+.uld-add-btn:hover{background:#005bb5}
+.uld-row-delete{background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:4px 6px;border-radius:4px;transition:all .15s}
+.uld-row-delete:hover{background:rgba(205,32,51,.08);color:var(--red)}
+.detail-chat-title{padding:10px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--af-blue2);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;background:var(--bg2);flex-shrink:0}
+.detail-chat-msgs{flex:1;overflow-y:auto;font-size:13px;padding:10px 12px;display:flex;flex-direction:column;gap:5px}
+.detail-chat-input{padding:10px 12px;border-top:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.detail-chat-input-row{display:flex;gap:5px;align-items:center}
+/* MILESTONE TIMELINE */
+.fc-timeline{min-width:280px;flex:1;padding:4px 0;display:flex;flex-direction:column;gap:6px}
+.fc-timeline-bar{position:relative;height:10px}
+.fc-timeline-line{position:absolute;top:50%;left:10px;right:10px;height:10px;background:var(--surface2);z-index:0;border-radius:999px;transform:translateY(-50%)}
+.fc-timeline-fill{position:absolute;top:50%;left:10px;height:10px;background:linear-gradient(90deg,var(--green),#34d399);z-index:1;transition:width .4s ease;border-radius:999px;transform:translateY(-50%)}
+.fc-timeline-dots{display:flex;justify-content:space-between;position:relative;z-index:2;padding:0 10px;margin-top:2px}
+.fc-milestone{display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;flex:1;min-width:0}
+.fc-milestone-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);background:var(--bg2);transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.fc-milestone-dot:hover{border-color:var(--af-blue2);transform:scale(1.15);box-shadow:0 2px 10px rgba(0,104,204,.25)}
+.fc-milestone-dot.done{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 2px 10px rgba(45,184,122,.25)}
+.fc-milestone-label{font-size:9px;color:var(--text3);margin-top:6px;text-align:center;line-height:1.2;font-weight:700;white-space:nowrap;letter-spacing:.2px}
+.fc-milestone-dot.done+.fc-milestone-label{color:var(--green)}
+.fc-milestone-time{font-size:9px;color:var(--text2);font-weight:600;margin-top:2px}
+.fc-timeline-percent{font-size:10px;color:var(--text2);font-weight:700;text-align:right;margin-top:4px;line-height:1;width:calc(100% - 20px);margin-left:auto;padding-right:10px;box-sizing:border-box}
+.fc-timeline-HLD{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11px;color:var(--text3);font-weight:700}
+.fc-timeline-HLD-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.chat-send-btn{padding:6px 12px;background:var(--af-blue2);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap}
+.chat-send-btn:hover{background:#005bb5}
+/* BIG */
+.big-view{flex:1;overflow-y:auto;padding:28px 32px;background:var(--bg)}
+.big-gantt-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.gantt-label-cell{width:220px;min-width:220px;padding:10px 14px;border-right:1px solid var(--border);background:var(--bg2);position:relative;display:flex;flex-direction:column;justify-content:center}
+.big-row-btns{position:absolute;top:6px;right:4px;display:flex;gap:2px;opacity:0;transition:opacity .15s}
+.gantt-label-cell:hover .big-row-btns{opacity:1}
+.big-edit-btn{background:none;border:none;color:var(--af-blue2);cursor:pointer;font-size:12px;padding:3px 5px;border-radius:4px;line-height:1}
+.big-edit-btn:hover{background:rgba(0,104,204,.08)}
+.big-del-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:3px 5px;border-radius:4px;line-height:1}
+.big-del-btn:hover{background:rgba(205,32,51,.08);color:var(--red)}
+.gantt-bar{position:absolute;top:12px;height:28px;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;cursor:default}
+.big-status{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.4px;margin-top:3px;border:1px solid}
+.big-status.prevu{background:rgba(123,139,163,.1);color:#7B8BA3;border-color:rgba(123,139,163,.2)}
+.big-status.transit{background:rgba(201,168,76,.1);color:var(--amber);border-color:rgba(201,168,76,.3);animation:blink 2s infinite}
+.big-status.parti{background:rgba(45,184,122,.1);color:var(--green);border-color:rgba(45,184,122,.3)}
+.big-status.late{background:rgba(205,32,51,.1);color:var(--red);border-color:rgba(205,32,51,.3);animation:blink 1s infinite}
+/* CONFIG PAGE */
+.config-page{display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg)}.config-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:40px;width:500px;max-width:95vw;box-shadow:0 8px 32px rgba(0,0,0,.08);text-align:center}.config-box h1{font-size:20px;color:var(--af-gold);margin-bottom:4px;font-style:italic}.config-box .subtitle{font-size:12px;color:var(--text3);margin-bottom:24px}.config-box label{display:block;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;font-weight:600;margin-bottom:4px;margin-top:14px}.config-box input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;outline:none;font-family:var(--font)}.config-box input:focus{border-color:var(--af-blue2)}.config-box .error-msg{color:var(--red);font-size:12px;font-weight:600;margin-top:12px;display:none}.config-box button{margin-top:20px;padding:12px 32px;background:var(--af-red);border:none;border-radius:var(--r);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)}.config-box button:hover{background:#a8172a}.config-box button:disabled{background:#ccc;cursor:wait}
+.sync-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600;display:flex;align-items:center;gap:5px;background:rgba(45,184,122,.1);color:var(--green);border:1px solid rgba(45,184,122,.25)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="config-page" id="login-page">
+<div class="config-box">
+<div style="margin-bottom:20px"><svg width="48" height="48" viewBox="0 0 32 32" style="border-radius:8px"><rect width="32" height="32" rx="6" fill="#0068CC"/><path d="M5,28 C7,22 16,11 25,5 C28,3 31,4 30,8 C28,14 20,23 11,27 C8,29 5,29 5,28 Z" fill="#fff"/></svg></div>
+<h1>SVA — Connexion</h1>
+<div class="subtitle">Suivi des Vols et Analyse — Air France Cargo CDG</div>
+<div id="login-form">
+<label>Identifiant</label>
+<input type="text" id="login-user" placeholder="Ton identifiant">
+<label>Mot de passe</label>
+<input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+<div class="error-msg" id="login-error"></div>
+<button onclick="doLogin()">SE CONNECTER</button>
+<p style="margin-top:16px;font-size:12px;color:var(--text3);">Pas encore de compte ? <a href="#" onclick="showRegister();return false" style="color:var(--af-blue2);font-weight:600;text-decoration:none">Créer un compte</a></p>
+</div>
+<div id="register-form" style="display:none">
+<label>Identifiant</label>
+<input type="text" id="reg-user" placeholder="">
+<label>Mot de passe</label>
+<input type="password" id="reg-pass" placeholder="Minimum 4 caractères">
+<label>Prénom</label>
+<input type="text" id="reg-prenom" placeholder="">
+<label>Nom</label>
+<input type="text" id="reg-nom" placeholder="">
+<label>Service</label>
+<select id="reg-service" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-family:var(--font);outline:none;background:var(--bg2);cursor:pointer">
+<option value="PPD">PPD — Préparation des vols</option>
+<option value="MAG">MAG — Magasin</option>
+<option value="PTA">PTA — Piste Arrivée</option>
+<option value="PTO">PTO — Piste Départ</option>
+<option value="GFC">GFC — Gestion Fret Cargo</option>
+<option value="OPS">OPS — Opérations</option>
+<option value="ADM">ADM — Administration</option>
+</select>
+<div class="error-msg" id="reg-error"></div>
+<button onclick="doRegister()">CRÉER MON COMPTE</button>
+<p style="margin-top:16px;font-size:12px;color:var(--text3);">Déjà un compte ? <a href="#" onclick="showLogin();return false" style="color:var(--af-blue2);font-weight:600;text-decoration:none">Se connecter</a></p>
+</div>
+</div>
+</div>
+
+<!-- APP (hidden until connected) -->
+<div id="app-container" style="display:none;flex-direction:column;height:100vh;">
+<div class="topbar"><div class="logo"><svg width="32" height="32" viewBox="0 0 32 32" class="logo-icon" style="border-radius:6px"><rect width="32" height="32" rx="6" fill="white"/><path d="M5,28 C7,22 16,11 25,5 C28,3 31,4 30,8 C28,14 20,23 11,27 C8,29 5,29 5,28 Z" fill="#CD2033"/></svg><span class="logo-text">SVA</span></div><div><div class="topbar-clock" id="clock">--:--:--</div><div class="topbar-date" id="topdate">---</div></div><div class="save-indicator" id="save-indicator">✓ Sauvegardé</div><div class="sync-badge">🟢 Connecté</div><div id="mode-badge" style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;letter-spacing:.5px;background:rgba(0,104,204,.1);color:var(--af-blue2);border:1px solid rgba(0,104,204,.2)">OPÉRATIONNEL</div><div class="topbar-right"><span class="airport-code">CDG</span><span style="font-size:11px;color:var(--text);">Paris CDG</span><div class="user-badge" onclick="openProfileModal()" title="Modifier mon profil"><div class="avatar" id="topbar-avatar">OP</div><div><div style="font-size:11px;font-weight:600;" id="topbar-name">Opérateur</div><div style="font-size:9px;color:var(--text3);" id="topbar-role">Cargo CDG</div></div></div></div></div>
+<div class="app-body"><div class="sidebar">
+<div class="sid-btn" id="sid-calendar" onclick="switchView('calendar')">📅</div>
+<div class="sid-btn active" id="sid-flights" onclick="switchView('flights')">✈</div>
+<div class="sid-btn" id="sid-dashboard" onclick="switchView('dashboard')">📊</div>
+<div class="sid-btn" id="sid-big" onclick="switchView('big')" style="font-size:18px;font-weight:900;color:#CD2033;font-family:'Segoe UI',sans-serif;">B</div>
+<div style="margin-top:auto"></div>
+<div class="sid-btn" onclick="doLogout()" title="Déconnexion" style="font-size:16px">🚪</div>
+</div><div class="main">
+<div class="view-section active" id="view-flights">
+<div class="dash-header"><div><div class="dash-title" id="dash-title">Vols</div><div class="dash-sub" id="dash-sub">---</div></div><div class="kpi-mini-row" id="kpi-mini-row"></div></div>
+<div class="filter-bar">
+<button class="filter-btn active" onclick="filterFlights('all',this)">Tous</button>
+<button class="filter-btn" onclick="filterFlights('prevu',this)">Prévus</button>
+<button class="filter-btn" onclick="filterFlights('encours',this)">En cours</button>
+<button class="filter-btn" onclick="filterFlights('cloture',this)">Clôturés</button>
+<button class="filter-btn" onclick="filterFlights('alerte',this)" style="color:var(--red)">⚠ Alertes</button>
+<div class="date-picker-bar"><button class="date-nav" onclick="changeDate(-1)">◀</button><input type="date" id="date-filter" onchange="onDateChange()"><button class="date-nav" onclick="changeDate(1)">▶</button><button class="date-today" onclick="goToday()">Aujourd'hui</button></div>
+<div class="search-box"><span style="color:var(--text3)">🔍</span><input placeholder="N° vol, destination…" oninput="searchFlights(this.value)"></div>
+<button class="import-btn" onclick="document.getElementById('csv-input').click()">📥 CLS</button>
+<input type="file" id="csv-input" accept=".csv,.txt" style="display:none" onchange="handleCSVImport(this)">
+<button class="import-btn" style="background:var(--af-gold)" onclick="document.getElementById('wo-input').click()">📋 HO</button>
+<input type="file" id="wo-input" accept=".csv,.txt" style="display:none" onchange="handleWOImport(this)">
+<button class="add-btn" onclick="openCreateModal()">+ Nouveau vol</button>
+</div>
+<div class="content-area"><div class="flights-panel" id="flights-panel"></div><div class="side-panel" id="side-panel"></div></div>
+<div class="gantt-panel" id="gantt-panel">
+  <div class="gantt-header" onclick="toggleGantt()">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2)">📅 Timeline — Jalons</span>
+      <div class="gantt-legend">
+        <div class="gantt-legend-item"><div class="gantt-legend-dot" style="background:#4CA8E0"></div>H/O</div>
+        <div class="gantt-legend-item"><div class="gantt-legend-dot" style="background:#C9A84C"></div>Build-Up</div>
+        <div class="gantt-legend-item"><div class="gantt-legend-dot" style="background:#2DB87A"></div>Dern. ULD</div>
+        <div class="gantt-legend-item"><div class="gantt-legend-dot" style="background:#CD2033"></div>Ctrl ULD</div>
+        <div class="gantt-legend-item"><div style="width:12px;height:2px;background:var(--af-red);border-radius:1px"></div>HLD</div>
+        <div class="gantt-legend-item"><div style="width:2px;height:10px;background:var(--red);border-radius:1px"></div>Maintenant</div>
+      </div>
+    </div>
+    <button id="gantt-toggle-btn" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;color:var(--text3);font-family:var(--font)">▼</button>
+  </div>
+  <div class="gantt-body" id="gantt-body"></div>
+</div>
+</div>
+<div class="view-section" id="view-calendar"><div class="calendar-view" id="calendar-content"></div></div>
+<div class="view-section" id="view-dashboard"><div class="dashboard-view active" id="dashboard-content"></div></div>
+<div class="view-section" id="view-big"><div class="big-view" id="big-content"></div></div>
+</div></div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="flight-modal" onclick="if(event.target===this)closeFlightModal()"><div class="modal" style="width:540px"><div class="modal-header"><div class="modal-title" id="modal-title">Créer un nouveau vol</div><button class="modal-close" onclick="closeFlightModal()">✕</button></div><div class="modal-body"><div class="form-grid">
+<div class="form-group"><label class="form-label">Numéro de vol</label><input class="form-input" id="f-num" placeholder=""></div>
+<div class="form-group"><label class="form-label">Compagnie</label><input class="form-input" id="f-company" value="Air France"></div>
+<div class="form-group"><label class="form-label">Origine</label><input class="form-input" id="f-orig" value="CDG" maxlength="3" style="text-transform:uppercase"></div>
+<div class="form-group"><label class="form-label">Destination</label><input class="form-input" id="f-dest" placeholder="" maxlength="3" style="text-transform:uppercase"></div>
+<div class="form-group"><label class="form-label">Date du vol</label><input class="form-input" type="date" id="f-date"></div>
+<div class="form-group"><label class="form-label">HLD</label><input class="form-input" type="time" id="f-HLD" value="14:00"></div>
+<div class="form-group"><label class="form-label">Type avion</label><select class="form-input" id="f-actype"><option>777-300ER</option><option>777-200</option><option>787-9</option><option>A350-900</option><option>A330-300</option><option>A330-900neo</option></select></div>
+<div class="form-group"><label class="form-label">Tonnage prévu (kg)</label><input class="form-input" type="number" id="f-tonnage" placeholder=""></div>
+<div class="form-group"><label class="form-label">Max soute (kg)</label><input class="form-input" type="number" id="f-maxw" placeholder=""></div>
+<div class="form-group"><label class="form-label">Volume (m³)</label><input class="form-input" type="number" id="f-volume" placeholder=""></div>
+<div class="form-group"><label class="form-label">Palettes dispo</label><input class="form-input" type="number" id="f-palettes" placeholder=""></div>
+<div class="form-group"><label class="form-label">AKE dispo</label><input class="form-input" type="number" id="f-ake" placeholder=""></div>
+<hr class="form-separator"><div class="form-section-title">Données réelles (J+1)</div>
+<div class="form-group"><label class="form-label">Tonnage réel (kg)</label><input class="form-input" type="number" id="f-realTonnage" placeholder=""></div>
+<div class="form-group"><label class="form-label">Positions ULD utilisées</label><input class="form-input" type="number" id="f-realULD" placeholder=""></div>
+<div class="form-group"><label class="form-label">Nombre de LTA</label><input class="form-input" type="number" id="f-lta" placeholder=""></div>
+<div class="form-group"><label class="form-label">Recettes (€)</label><input class="form-input" type="number" id="f-revenue" placeholder=""></div>
+<hr class="form-separator">
+<div class="form-group full"><label class="form-label">Statut</label><select class="form-input" id="f-status"><option value="prevu">Prévu</option><option value="encours">En cours</option><option value="cloture">Clôturé</option><option value="alerte">Alerte</option></select></div>
+</div></div><div class="modal-footer"><button class="btn btn-cancel" onclick="closeFlightModal()">Annuler</button><button class="btn btn-primary" id="modal-save-btn" onclick="saveFlight()">CRÉER LE VOL</button></div></div></div>
+
+<div class="modal-overlay" id="delete-modal" onclick="if(event.target===this)closeDeleteModal()"><div class="modal" style="width:400px"><div class="modal-header"><div class="modal-title" style="color:var(--red)">Supprimer ce vol ?</div><button class="modal-close" onclick="closeDeleteModal()">✕</button></div><div class="modal-body" style="text-align:center"><div style="font-size:40px;margin-bottom:12px">🗑</div><div id="delete-info" style="padding:14px;background:var(--surface);border-radius:10px;border:1px solid var(--border);font-size:14px;font-weight:600;margin-bottom:16px"></div><div style="font-size:12.5px;color:var(--text3)">Irréversible.</div></div><div class="modal-footer" style="justify-content:center"><button class="btn btn-cancel" onclick="closeDeleteModal()">Annuler</button><button class="btn btn-primary" onclick="confirmDelete()">SUPPRIMER</button></div></div></div>
+
+<div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeDetailModal()"><div class="modal" style="width:92vw;height:88vh;max-width:1400px"><div class="modal-header"><div class="modal-title" id="detail-title">Détail du vol</div><input type="file" id="analyse-input" accept=".csv,.txt" style="display:none" onchange="handleAnalyseImport(this)"><button class="modal-close" onclick="closeDetailModal()">✕</button></div><div id="detail-body" style="flex:1;overflow:hidden;display:flex;width:100%;"></div></div></div>
+
+<div class="modal-overlay" id="import-modal" onclick="if(event.target===this)closeImportModal()"><div class="modal" style="width:550px"><div class="modal-header"><div class="modal-title">📥 Import CLS</div><button class="modal-close" onclick="closeImportModal()">✕</button></div><div class="modal-body" id="import-body"></div><div class="modal-footer" id="import-footer"></div></div></div>
+
+<div class="modal-overlay" id="wo-modal" onclick="if(event.target===this)closeWOModal()"><div class="modal" style="width:600px"><div class="modal-header"><div class="modal-title" style="color:var(--text)">📋 Import HO</div><button class="modal-close" onclick="closeWOModal()">✕</button></div><div class="modal-body" id="wo-body"></div><div class="modal-footer" id="wo-footer"></div></div></div>
+
+<div class="modal-overlay" id="big-modal" onclick="if(event.target===this)closeBIGModal()"><div class="modal" style="width:460px"><div class="modal-header"><div class="modal-title">🔄 Nouveau transit BIG</div><button class="modal-close" onclick="closeBIGModal()">✕</button></div><div class="modal-body"><div class="form-grid"><div class="form-group"><label class="form-label">N° Vol arrivée</label><input class="form-input" id="big-flightIn" placeholder="AF0123"></div><div class="form-group"><label class="form-label">Destination finale</label><input class="form-input" id="big-dest" placeholder="JFK" maxlength="3" style="text-transform:uppercase"></div><div class="form-group full"><label class="form-label">N° LTA *</label><input class="form-input" id="big-lta" placeholder="057-12345678"></div><div class="form-group"><label class="form-label">Arrivée CDG *</label><input class="form-input" type="datetime-local" id="big-arrival"></div><div class="form-group"><label class="form-label">Départ CDG *</label><input class="form-input" type="datetime-local" id="big-departure"></div></div></div><div class="modal-footer"><button class="btn btn-cancel" onclick="closeBIGModal()">Annuler</button><button class="btn btn-primary" onclick="addBIG()">Ajouter</button></div></div></div>
+
+<div class="modal-overlay" id="profile-modal" onclick="if(event.target===this)closeProfileModal()"><div class="modal" style="width:380px"><div class="modal-header"><div class="modal-title">Mon profil</div><button class="modal-close" onclick="closeProfileModal()">✕</button></div><div class="modal-body"><div class="form-grid"><div class="form-group full"><label class="form-label">Nom complet</label><input class="form-input" id="profile-name" placeholder="Ex : Jean Dupont" onkeydown="if(event.key==='Enter')saveProfile()"></div><div class="form-group full"><label class="form-label">Fonction</label><input class="form-input" id="profile-role" placeholder="Ex : Chef de quai" onkeydown="if(event.key==='Enter')saveProfile()"></div><div class="form-group full"><label class="form-label">Mon service</label><select class="form-input" id="profile-actor"><option value="ALL">👥 Superviseur — voir tous les messages</option><option value="PPD">🔴 PPD</option><option value="MAG">🟡 MAG</option><option value="PTA">🟢 PTA</option><option value="PTO">🔵 PTO</option><option value="GFC">⚪ GFC</option></select></div></div><div style="margin-top:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-size:11px;color:var(--text3);">Seuls les messages adressés à votre service (ou à tous) vous seront notifiés. Les autres sont affichés en grisé.</div></div><div class="modal-footer"><button class="btn btn-cancel" onclick="closeProfileModal()">Annuler</button><button class="btn btn-primary" onclick="saveProfile()">Enregistrer</button></div></div></div>
+
+<div class="modal-overlay" id="admin-pwd-modal"><div class="modal" style="width:360px"><div class="modal-header" style="border-top:3px solid var(--af-gold)"><div class="modal-title" style="display:flex;align-items:center;gap:8px">🔐 Accès Administrateur</div><button class="modal-close" onclick="cancelAdminAccess()">✕</button></div><div class="modal-body"><p style="font-size:12px;color:var(--text2);margin-bottom:16px">Le mode Admin donne accès aux onglets Dashboard, BIG et à l'analyse des départs. Entrez le mot de passe pour continuer.</p><div class="form-group full"><label class="form-label">Mot de passe</label><input class="form-input" id="admin-pwd-input" type="password" placeholder="••••" onkeydown="if(event.key==='Enter')confirmAdminPassword()"></div><div id="admin-pwd-error" style="display:none;margin-top:8px;padding:8px 12px;background:rgba(205,32,51,.08);border:1px solid rgba(205,32,51,.3);border-radius:6px;font-size:11px;color:var(--red)">Mot de passe incorrect.</div></div><div class="modal-footer"><button class="btn btn-cancel" onclick="cancelAdminAccess()">Annuler</button><button class="btn btn-primary" onclick="confirmAdminPassword()" style="background:var(--af-gold);color:#fff">Accéder</button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var supabaseClient=null;
+var SK='cargoops-v2-data',flights=[],CF='all',SQ='',SID=null,EID=null,DID=null,NID=1;var bigs=[],NBID=1,bigTimerID=null,bigEditID=null,bigsSynced=false;
+var ADMIN_PASS='1234';
+var isAdminMode=false;
+try{isAdminMode=localStorage.getItem('sva-admin-mode')==='1'}catch(e){}
+var pendingAdminProfile=null;
+
+function applyMode(){
+  var mb=document.getElementById('mode-badge');
+  var sdDash=document.getElementById('sid-dashboard');
+  var sdBig=document.getElementById('sid-big');
+  if(isAdminMode){
+    if(mb){mb.textContent='ADMIN';mb.style.background='rgba(201,168,76,.15)';mb.style.color='var(--af-gold)';mb.style.borderColor='rgba(201,168,76,.4)'}
+    if(sdDash)sdDash.style.display='';
+    if(sdBig)sdBig.style.display='';
+  }else{
+    if(mb){mb.textContent='OPÉRATIONNEL';mb.style.background='rgba(0,104,204,.1)';mb.style.color='var(--af-blue2)';mb.style.borderColor='rgba(0,104,204,.2)'}
+    if(sdDash){sdDash.style.display='none';if(sdDash.classList.contains('active'))switchView('flights')}
+    if(sdBig){sdBig.style.display='none';if(sdBig.classList.contains('active'))switchView('flights')}
+  }
+}
+
+function openAdminPasswordModal(){
+  document.getElementById('admin-pwd-input').value='';
+  document.getElementById('admin-pwd-error').style.display='none';
+  document.getElementById('admin-pwd-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('admin-pwd-input').focus()},100);
+}
+function cancelAdminAccess(){
+  document.getElementById('admin-pwd-modal').classList.remove('open');
+  pendingAdminProfile=null;
+  document.getElementById('profile-actor').value=userProfile.actor||'ALL';
+}
+function confirmAdminPassword(){
+  var pwd=document.getElementById('admin-pwd-input').value;
+  if(pwd!==ADMIN_PASS){document.getElementById('admin-pwd-error').style.display='block';document.getElementById('admin-pwd-input').value='';document.getElementById('admin-pwd-input').focus();return}
+  document.getElementById('admin-pwd-modal').classList.remove('open');
+  if(pendingAdminProfile){
+    userProfile=pendingAdminProfile;pendingAdminProfile=null;
+    localStorage.setItem('sva-user-profile',JSON.stringify(userProfile));
+  }
+  isAdminMode=true;
+  localStorage.setItem('sva-admin-mode','1');
+  updateProfileUI();applyMode();
+  document.querySelectorAll('.chat-author-input').forEach(function(el){el.value=userProfile.name});
+}
+// ═══ USER PROFILE ═══
+var userProfile={name:'Opérateur',role:'Cargo CDG',actor:'ALL'};
+(function(){try{var p=JSON.parse(localStorage.getItem('sva-user-profile'));if(p&&p.name)userProfile=p}catch(e){}})();
+var ACTOR_COLORS={ALL:'#888',PPD:'#CD2033',MAG:'#C9A84C',PTA:'#2DB87A',PTO:'#4CA8E0',GFC:'#aaa'};
+var ACTOR_LABELS={ALL:'ALL',PPD:'PPD',MAG:'MAG',PTA:'PTA',PTO:'PTO',GFC:'GFC'};
+function getMsgDests(dest){if(!dest||dest==='ALL')return['ALL'];if(Array.isArray(dest))return dest;return[dest]}
+function isForMe(m){if(userProfile.actor==='ALL')return true;var dests=getMsgDests(m.dest);return dests.indexOf('ALL')>=0||dests.indexOf(userProfile.actor)>=0}
+var DEST_OPTS=[{v:'ALL',l:'ALL',c:'#888'},{v:'PPD',l:'PPD',c:'#CD2033'},{v:'MAG',l:'MAG',c:'#C9A84C'},{v:'PTA',l:'PTA',c:'#2DB87A'},{v:'PTO',l:'PTO',c:'#4CA8E0'},{v:'GFC',l:'GFC',c:'#aaa'}];
+function buildDestGroup(groupId){return'<div class="dest-toggle-group" id="'+groupId+'">'+DEST_OPTS.map(function(d){return'<button class="dest-toggle-btn'+(d.v==='ALL'?' active':'')+'" data-val="'+d.v+'" style="color:'+d.c+';border-color:'+d.c+';'+(d.v==='ALL'?'background:'+d.c+';color:#fff;':'')+'\" onclick=\"toggleDest(this,\''+groupId+'\')" type="button">'+d.l+'</button>'}).join('')+'</div>'}
+function toggleDest(btn,groupId){var group=document.getElementById(groupId);if(!group)return;var val=btn.dataset.val;if(val==='ALL'){group.querySelectorAll('.dest-toggle-btn').forEach(function(b){b.classList.remove('active');b.style.background='transparent';b.style.color=b.style.borderColor});var ab=group.querySelector('[data-val="ALL"]');ab.classList.add('active');ab.style.background='#888';ab.style.color='#fff';return}btn.classList.toggle('active');if(btn.classList.contains('active')){btn.style.background=btn.style.borderColor;btn.style.color='#fff'}else{btn.style.background='transparent';btn.style.color=btn.style.borderColor}var nonAll=Array.from(group.querySelectorAll('.dest-toggle-btn:not([data-val="ALL"])')).filter(function(b){return b.classList.contains('active')});var allBtn=group.querySelector('[data-val="ALL"]');if(nonAll.length>0){allBtn.classList.remove('active');allBtn.style.background='transparent';allBtn.style.color=allBtn.style.borderColor}else{allBtn.classList.add('active');allBtn.style.background='#888';allBtn.style.color='#fff'}}
+function getDestFromGroup(groupId){var group=document.getElementById(groupId);if(!group)return'ALL';var active=Array.from(group.querySelectorAll('.dest-toggle-btn.active')).map(function(b){return b.dataset.val});if(!active.length||active.indexOf('ALL')>=0)return'ALL';return active.length===1?active[0]:active}
+function updateProfileUI(){
+  var av=document.getElementById('topbar-avatar'),nm=document.getElementById('topbar-name'),rl=document.getElementById('topbar-role');
+  var parts=userProfile.name.trim().split(/\s+/);
+  var initials=(parts[0][0]+(parts[1]?parts[1][0]:'')).toUpperCase();
+  if(av){av.textContent=initials;av.style.background=ACTOR_COLORS[userProfile.actor||'ALL']||'var(--af-blue2)'}
+  if(nm)nm.textContent=userProfile.name;
+  if(rl)rl.textContent=(userProfile.role||'Cargo CDG')+(userProfile.actor&&userProfile.actor!=='ALL'?' · '+userProfile.actor:'');
+}
+function openProfileModal(){
+  document.getElementById('profile-name').value=userProfile.name==='Opérateur'?'':userProfile.name;
+  document.getElementById('profile-role').value=userProfile.role==='Cargo CDG'?'':userProfile.role;
+  document.getElementById('profile-actor').value=userProfile.actor||'ALL';
+  document.getElementById('profile-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('profile-name').focus()},100);
+}
+function closeProfileModal(){document.getElementById('profile-modal').classList.remove('open')}
+function saveProfile(){
+  var n=document.getElementById('profile-name').value.trim();
+  var r=document.getElementById('profile-role').value.trim();
+  var a=document.getElementById('profile-actor').value||'ALL';
+  if(!n)return;
+  if(a==='ALL'&&!isAdminMode){
+    pendingAdminProfile={name:n,role:r||'Cargo CDG',actor:'ALL'};
+    closeProfileModal();
+    openAdminPasswordModal();
+    return;
+  }
+  if(a!=='ALL'&&isAdminMode){
+    isAdminMode=false;
+    localStorage.setItem('sva-admin-mode','0');
+  }
+  userProfile={name:n,role:r||'Cargo CDG',actor:a};
+  localStorage.setItem('sva-user-profile',JSON.stringify(userProfile));
+  updateProfileUI();applyMode();
+  document.querySelectorAll('.chat-author-input').forEach(function(el){el.value=n});
+  closeProfileModal();
+  renderList();
+}
+var SD=function(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}();
+var cM=new Date().getMonth(),cY=new Date().getFullYear(),cSD=null,PI=null;
+var MO=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+var MS=['JAN','FÉV','MAR','AVR','MAI','JUN','JUL','AOÛ','SEP','OCT','NOV','DÉC'];
+var DA=['DIM','LUN','MAR','MER','JEU','VEN','SAM'];
+var DF=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+
+// ═══ SUPABASE CONNECTION (credentials intégrées) ═══
+var SUPA_URL='https://ymilueuhqmnrdvmtnwec.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltaWx1ZXVocW1ucmR2bXRud2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5MjMzMDgsImV4cCI6MjA5MjQ5OTMwOH0.JUyRmulMllEuqVuCr5qXH1E-V_xNGz2Q0SghexCs4wg';
+var currentUser=null;
+
+function showLogin(){document.getElementById('login-form').style.display='block';document.getElementById('register-form').style.display='none'}
+function showRegister(){document.getElementById('login-form').style.display='none';document.getElementById('register-form').style.display='block'}
+
+async function initSupabase(){
+  supabaseClient=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+}
+
+async function doLogin(){
+  var username=document.getElementById('login-user').value.trim().toLowerCase();
+  var pass=document.getElementById('login-pass').value.trim();
+  var err=document.getElementById('login-error');
+  if(!username||!pass){err.textContent='Identifiant et mot de passe requis.';err.style.display='block';return}
+  err.style.display='none';
+  try{
+    if(!supabaseClient)await initSupabase();
+    var res=await supabaseClient.from('users').select('*').eq('username',username).single();
+    if(res.error||!res.data){err.textContent='Identifiant inconnu.';err.style.display='block';return}
+    if(res.data.password!==pass){err.textContent='Mot de passe incorrect.';err.style.display='block';return}
+    currentUser=res.data;
+    localStorage.setItem('sva-current-user',JSON.stringify({username:username,password:pass}));
+    await loadAppData();
+  }catch(e){err.textContent=e.message||'Erreur de connexion.';err.style.display='block'}
+}
+
+async function doRegister(){
+  var username=document.getElementById('reg-user').value.trim().toLowerCase();
+  var pass=document.getElementById('reg-pass').value.trim();
+  var prenom=document.getElementById('reg-prenom').value.trim();
+  var nom=document.getElementById('reg-nom').value.trim();
+  var service=document.getElementById('reg-service').value;
+  var err=document.getElementById('reg-error');
+  if(!username||!pass||!prenom||!nom){err.textContent='Tous les champs sont requis.';err.style.display='block';return}
+  if(pass.length<4){err.textContent='Mot de passe trop court (min 4 caractères).';err.style.display='block';return}
+  err.style.display='none';
+  try{
+    if(!supabaseClient)await initSupabase();
+    var existing=await supabaseClient.from('users').select('id').eq('username',username);
+    if(existing.data&&existing.data.length>0){err.textContent='Cet identifiant existe déjà.';err.style.display='block';return}
+    var res=await supabaseClient.from('users').insert({username:username,password:pass,prenom:prenom,nom:nom,service:service}).select();
+    if(res.error)throw new Error(res.error.message);
+    currentUser=res.data[0];
+    localStorage.setItem('sva-current-user',JSON.stringify({username:username,password:pass}));
+    await loadAppData();
+  }catch(e){err.textContent=e.message||'Erreur.';err.style.display='block'}
+}
+
+async function loadAppData(){
+  try{
+    var result=await supabaseClient.from('flights').select('*');
+    if(result.error)throw new Error(result.error.message);
+    flights=[];NID=1;
+    (result.data||[]).forEach(function(row){var f=row.data||{};f._dbId=row.id;flights.push(f);if(f.id>=NID)NID=f.id+1});
+    try{
+      var bigRes=await supabaseClient.from('bigs').select('*');
+      if(bigRes.error)throw new Error(bigRes.error.message);
+      bigs=[];NBID=1;
+      (bigRes.data||[]).forEach(function(row){var b=row.data||{};b._dbId=row.id;bigs.push(b);if(b.id>=NBID)NBID=b.id+1});
+      bigsSynced=true;
+    }catch(e){
+      bigsSynced=false;
+      try{var d=JSON.parse(localStorage.getItem(SK));if(d&&d.bigs){bigs=d.bigs;NBID=d.nextBigId||1}}catch(e2){}
+    }
+    // Realtime
+    supabaseClient.channel('flights-rt').on('postgres_changes',{event:'*',schema:'public',table:'flights'},handleRT).subscribe();
+    if(bigsSynced){supabaseClient.channel('bigs-rt').on('postgres_changes',{event:'*',schema:'public',table:'bigs'},handleBigRT).subscribe();}
+    // Set user profile from login
+    userProfile={name:currentUser.prenom+' '+currentUser.nom,role:currentUser.service+' — Cargo CDG',actor:currentUser.service};
+    localStorage.setItem('sva-user-profile',JSON.stringify(userProfile));
+    // Show app
+    document.getElementById('login-page').style.display='none';
+    document.getElementById('app-container').style.display='flex';
+    document.getElementById('date-filter').value=SD;
+    updateProfileUI();applyMode();renderList();startClock();
+  }catch(e){alert('Erreur chargement: '+e.message)}
+}
+
+function doLogout(){
+  if(!confirm('Se déconnecter ?'))return;
+  localStorage.removeItem('sva-current-user');
+  currentUser=null;
+  location.reload();
+}
+
+// Auto-login if session saved
+(async function(){
+  try{
+    var saved=JSON.parse(localStorage.getItem('sva-current-user'));
+    if(saved&&saved.username&&saved.password){
+      await initSupabase();
+      var res=await supabaseClient.from('users').select('*').eq('username',saved.username).single();
+      if(res.data&&res.data.password===saved.password){
+        currentUser=res.data;
+        await loadAppData();
+        return;
+      }
+    }
+  }catch(e){}
+  // Show login page
+  document.getElementById('login-page').style.display='flex';
+})();
+
+// ═══ REALTIME ═══
+function handleRT(payload){
+var ev=payload.eventType,nw=payload.new,ol=payload.old;
+if(ev==='INSERT'){var f=nw.data||{};f._dbId=nw.id;var exists=flights.some(function(x){return x._dbId===nw.id});if(!exists){flights.push(f);if(f.id>=NID)NID=f.id+1}}
+else if(ev==='UPDATE'){var f=nw.data||{};f._dbId=nw.id;var idx=flights.findIndex(function(x){return x._dbId===nw.id});if(idx>=0)flights[idx]=f;else{flights.push(f);if(f.id>=NID)NID=f.id+1}}
+else if(ev==='DELETE'){flights=flights.filter(function(x){return x._dbId!==ol.id});if(SID&&!flights.find(function(x){return x.id===SID})){SID=null;document.getElementById('side-panel').classList.remove('open')}}
+renderList();if(SID)refreshPanel(SID);
+var si=document.getElementById('save-indicator');si.textContent='🔄 Sync';si.className='save-indicator show';setTimeout(function(){si.classList.remove('show')},1500)}
+
+function handleBigRT(payload){
+var ev=payload.eventType,nw=payload.new,ol=payload.old;
+if(ev==='INSERT'){var b=nw.data||{};b._dbId=nw.id;var exists=bigs.some(function(x){return x._dbId===nw.id});if(!exists){bigs.push(b);if(b.id>=NBID)NBID=b.id+1}}
+else if(ev==='UPDATE'){var b=nw.data||{};b._dbId=nw.id;var idx=bigs.findIndex(function(x){return x._dbId===nw.id});if(idx>=0)bigs[idx]=b;else{bigs.push(b);if(b.id>=NBID)NBID=b.id+1}}
+else if(ev==='DELETE'){bigs=bigs.filter(function(x){return x._dbId!==ol.id})}
+renderBIG();
+var si=document.getElementById('save-indicator');si.textContent='🔄 Sync BIG';si.className='save-indicator show';setTimeout(function(){si.classList.remove('show')},1500)}
+
+// ═══ SAVE / LOAD ═══
+async function save(){
+var e=document.getElementById('save-indicator');e.textContent='💾 Sauvegarde...';e.className='save-indicator show';
+try{
+// Save each flight to Supabase
+for(var i=0;i<flights.length;i++){
+  var f=flights[i];var rowData=Object.assign({},f);delete rowData._dbId;
+  if(f._dbId){
+    await supabaseClient.from('flights').update({data:rowData,updated_at:new Date().toISOString()}).eq('id',f._dbId);
+  }else{
+    var res=await supabaseClient.from('flights').insert({data:rowData}).select();
+    if(res.data&&res.data[0])f._dbId=res.data[0].id;
+  }
+}
+// Delete removed flights from Supabase
+var dbIds=flights.map(function(f){return f._dbId}).filter(Boolean);
+var allRows=await supabaseClient.from('flights').select('id');
+if(allRows.data){allRows.data.forEach(async function(row){if(dbIds.indexOf(row.id)<0){await supabaseClient.from('flights').delete().eq('id',row.id)}})}
+// Save bigs
+if(bigsSynced){
+  for(var j=0;j<bigs.length;j++){
+    var b=bigs[j];var bRow=Object.assign({},b);delete bRow._dbId;
+    if(b._dbId){await supabaseClient.from('bigs').update({data:bRow,updated_at:new Date().toISOString()}).eq('id',b._dbId);}
+    else{var br=await supabaseClient.from('bigs').insert({data:bRow}).select();if(br.data&&br.data[0])b._dbId=br.data[0].id;}
+  }
+  var bigDbIds=bigs.map(function(b){return b._dbId}).filter(Boolean);
+  var allBigRows=await supabaseClient.from('bigs').select('id');
+  if(allBigRows.data){allBigRows.data.forEach(async function(row){if(bigDbIds.indexOf(row.id)<0){await supabaseClient.from('bigs').delete().eq('id',row.id)}})}
+}else{
+  localStorage.setItem(SK,JSON.stringify({bigs:bigs,nextBigId:NBID}));
+}
+e.textContent='✓ Sauvegardé';e.className='save-indicator show';setTimeout(function(){e.classList.remove('show')},1500);
+}catch(err){e.textContent='⚠ Erreur sauvegarde';e.className='save-indicator show';e.style.color='var(--red)';setTimeout(function(){e.classList.remove('show');e.style.color=''},2000);console.error('Save error:',err)}}
+
+function load(){/* Loading is done in doConnect */}
+
+// ═══ GANTT TIMELINE ═══
+var ganttCollapsed=false;
+try{ganttCollapsed=localStorage.getItem('sva-gantt-collapsed')==='1'}catch(e){}
+
+function toggleGantt(){
+  ganttCollapsed=!ganttCollapsed;
+  try{localStorage.setItem('sva-gantt-collapsed',ganttCollapsed?'1':'0')}catch(e){}
+  var panel=document.getElementById('gantt-panel');
+  var btn=document.getElementById('gantt-toggle-btn');
+  if(panel)panel.classList.toggle('collapsed',ganttCollapsed);
+  if(btn)btn.textContent=ganttCollapsed?'▲':'▼';
+  if(!ganttCollapsed)renderGantt();
+}
+
+function renderGantt(){
+  var el=document.getElementById('gantt-body');
+  if(!el||ganttCollapsed)return;
+  var fs=getF().slice().sort(function(a,b){var at=a.HLD||'99:99',bt=b.HLD||'99:99';return at<bt?-1:at>bt?1:0});
+  if(!fs.length){el.innerHTML='<div style="padding:16px;text-align:center;color:var(--text3);font-size:11px">Aucun vol pour cette date</div>';return}
+
+  function toPct(s){if(!s)return null;var p=s.split(':');return(parseInt(p[0]||0)*60+parseInt(p[1]||0))/1440*100}
+
+  var now=new Date(),isToday=localD(now)===SD;
+  var nowPct=isToday?((now.getHours()*60+now.getMinutes())/1440*100):null;
+  var mlKeys=['ho','buildup','lastULD','ctrlULD'];
+  var mlNames=['H/O','Build-Up','Dern. ULD','Ctrl ULD'];
+  var mlColors=['#4CA8E0','#C9A84C','#2DB87A','#CD2033'];
+
+  // Axis + gridlines
+  var axisTrack='';
+  for(var h=0;h<=23;h+=2){
+    var pct=h/24*100;
+    axisTrack+='<div style="position:absolute;left:'+pct+'%;transform:translateX(-50%);font-size:8px;color:var(--text3);font-weight:600;line-height:26px;white-space:nowrap">'+String(h).padStart(2,'0')+'h</div>';
+    axisTrack+='<div style="position:absolute;left:'+pct+'%;top:26px;height:9999px;width:1px;background:var(--border);opacity:.5;pointer-events:none"></div>';
+  }
+  var axis='<div class="gantt-axis-row"><div class="gantt-label" style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;z-index:6">Vol</div><div class="gantt-track" style="overflow:visible">'+axisTrack+'</div></div>';
+
+  // Flight rows
+  var rowsHTML=fs.map(function(f){
+    var ml=f.milestones||{};
+    var hldPct=toPct(f.HLD);
+    var stColor=f.status==='cloture'?'#2DB87A':f.status==='alerte'?'#CD2033':f.status==='encours'?'#C9A84C':'#bbb';
+    var track='';
+    if(hldPct!==null){
+      var ws=Math.max(0,hldPct-16.67); // 4h = 4/24*100
+      track+='<div style="position:absolute;height:8px;top:50%;transform:translateY(-50%);left:'+ws+'%;width:'+(hldPct-ws)+'%;background:var(--surface2);border-radius:4px"></div>';
+      track+='<div title="HLD '+f.HLD+'" style="position:absolute;top:5px;bottom:5px;left:'+hldPct+'%;width:2px;background:var(--af-red);transform:translateX(-1px);border-radius:1px"><div style="position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);font-size:7px;font-weight:800;color:var(--af-red);background:var(--bg2);padding:0 2px;white-space:nowrap;border-radius:2px">'+f.HLD+'</div></div>';
+    }
+    mlKeys.forEach(function(k,i){
+      var t=toPct(ml[k]);
+      if(t!==null){
+        track+='<div title="'+mlNames[i]+' — '+ml[k]+'" style="position:absolute;left:'+t+'%;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:'+mlColors[i]+';border:2px solid var(--bg2);box-shadow:0 1px 4px rgba(0,0,0,.2);z-index:4"></div>';
+        track+='<div style="position:absolute;left:'+t+'%;top:3px;transform:translateX(-50%);font-size:7px;font-weight:700;color:'+mlColors[i]+';white-space:nowrap;pointer-events:none">'+mlNames[i]+'</div>';
+      }
+    });
+    return'<div class="gantt-row"><div class="gantt-label" style="border-left:3px solid '+stColor+'"><div style="font-weight:700;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+f.num+'</div><div style="font-size:9px;color:var(--text3)">'+f.orig+'→'+f.dest+'</div></div><div class="gantt-track">'+track+'</div></div>';
+  }).join('');
+
+  var nowLine=nowPct!==null?'<div style="position:absolute;top:0;bottom:0;left:calc(120px + (100% - 120px) * '+(nowPct/100)+');width:2px;background:var(--red);opacity:.8;z-index:10;pointer-events:none"><div style="position:absolute;top:2px;left:4px;font-size:7px;font-weight:800;color:var(--red);background:var(--bg2);padding:1px 3px;border-radius:2px;white-space:nowrap">▶ Maintenant</div></div>':'';
+
+  el.innerHTML='<div class="gantt-inner">'+axis+'<div style="position:relative">'+nowLine+rowsHTML+'</div></div>';
+}
+
+(function(){var p=document.getElementById('gantt-panel'),b=document.getElementById('gantt-toggle-btn');if(ganttCollapsed&&p)p.classList.add('collapsed');if(b)b.textContent=ganttCollapsed?'▲':'▼'})();
+function startClock(){function t(){var n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');document.getElementById('topdate').textContent=DA[n.getDay()]+' '+String(n.getDate()).padStart(2,'0')+' '+MS[n.getMonth()]+' '+n.getFullYear()}t();setInterval(t,1000)}
+function onDateChange(){SD=document.getElementById('date-filter').value;renderList()}
+function changeDate(dir){var d=new Date(SD);d.setDate(d.getDate()+dir);SD=d.toISOString().split('T')[0];document.getElementById('date-filter').value=SD;renderList()}
+function goToday(){SD=localD(new Date());document.getElementById('date-filter').value=SD;renderList()}
+function fmtD(ds){if(!ds)return'';var d=new Date(ds+'T00:00:00');return String(d.getDate()).padStart(2,'0')+' '+MS[d.getMonth()]+' '+d.getFullYear()}
+function localD(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function switchView(n){document.querySelectorAll('.sid-btn').forEach(function(b){b.classList.remove('active')});document.getElementById('sid-'+n).classList.add('active');document.querySelectorAll('.view-section').forEach(function(v){v.classList.remove('active')});document.getElementById('view-'+n).classList.add('active');if(n==='calendar')renderCal();if(n==='dashboard')renderDash();if(n==='big'){renderBIG();if(!bigTimerID)bigTimerID=setInterval(renderBIG,60000)}else{if(bigTimerID){clearInterval(bigTimerID);bigTimerID=null}}if(n==='flights')renderGantt();}
+function getF(){var l=flights.filter(function(f){return f.flightDate===SD});if(CF!=='all')l=l.filter(function(f){return f.status===CF});if(SQ){var q=SQ.toLowerCase();l=l.filter(function(f){return f.num.toLowerCase().indexOf(q)>=0||f.dest.toLowerCase().indexOf(q)>=0||f.orig.toLowerCase().indexOf(q)>=0})}return l}
+function filterFlights(s,b){CF=s;document.querySelectorAll('.filter-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');renderList()}
+function searchFlights(v){SQ=v;renderList()}
+function updH(){var df=flights.filter(function(f){return f.flightDate===SD});document.getElementById('dash-title').textContent='Vols du '+fmtD(SD);document.getElementById('dash-sub').innerHTML=fmtD(SD)+' · CDG · <span style="color:var(--text);font-weight:700;">'+df.length+' vols</span>';var tT=df.reduce(function(s,f){return s+(f.tonnage||0)},0),al=df.filter(function(f){return f.status==='alerte'}).length;document.getElementById('kpi-mini-row').innerHTML='<div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--text);">'+(tT/1000).toFixed(1)+'t</div><div class="kpi-mini-label">Tonnage</div></div><div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--af-blue2);">'+df.length+'</div><div class="kpi-mini-label">Vols</div></div><div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--red);">'+al+'</div><div class="kpi-mini-label">Alertes</div></div>'}
+
+function renderList(){updH();var list=getF(),p=document.getElementById('flights-panel');if(!list.length){p.innerHTML='<div class="empty-state"><div class="icon">✈</div><div>Aucun vol le '+fmtD(SD)+'</div><div style="margin-top:8px;font-size:12px;">Clique "+ Nouveau vol" ou "📥 Importer CLS"</div></div>';renderGantt();return}
+p.innerHTML=list.map(function(f,i){var pct=f.maxw>0?Math.round(f.tonnage/f.maxw*100):0,bc=pct>90?'var(--red)':pct>70?'var(--amber)':'var(--green)',sl=f.status==='prevu'?'PRÉVU':f.status==='encours'?'EN COURS':f.status==='cloture'?'CLÔTURÉ':'⚠ ALERTE',hj=f.realTonnage>0,hu=f.uldLines&&f.uldLines.length>0;var msgs=f.messages||[];var msgCount=msgs.length;var hasUnseenUrgent=msgs.some(function(m){return m.prio==='urgent'&&!m.seen&&isForMe(m)});var hasUnseen=msgs.some(function(m){return!m.seen&&isForMe(m)});var chatBadge='';if(msgCount>0){var dot=hasUnseenUrgent?'<span class="chat-notif-dot urgent-dot"></span>':hasUnseen?'<span class="chat-notif-dot unseen-dot"></span>':'';chatBadge='<div class="fc-chat-badge">'+dot+'💬 '+msgCount+'</div>';}var ml=f.milestones||{};var mlNames=['H/O','Build-Up','Dernière ULD','Contrôle ULD'];var mlKeys=['ho','buildup','lastULD','ctrlULD'];var mlDone=mlKeys.filter(function(k){return ml[k]}).length;var mlFillPct=mlKeys.length>0?Math.round(mlDone/mlKeys.length*100):0;var mlDotsHTML=mlKeys.map(function(k,j){var done=ml[k];var dotClass=done?'done':'';return'<div class="fc-milestone" onclick="event.stopPropagation();toggleMilestone(event,'+f.id+',\''+k+'\')" title="'+(done?mlNames[j]+' ✓ '+ml[k]:mlNames[j]+' — Cliquer pour valider')+'"><div class="fc-milestone-dot '+dotClass+'">'+(done?'✓':'')+'</div><div class="fc-milestone-label">'+mlNames[j]+'</div>'+(done?'<div class="fc-milestone-time">'+ml[k]+'</div>':'')+'</div>'}).join('');var timelineHTML='<div class="fc-timeline"><div class="fc-timeline-bar"><div class="fc-timeline-line"></div><div class="fc-timeline-fill" style="width:'+mlFillPct+'%"></div></div><div class="fc-timeline-dots">'+mlDotsHTML+'</div><div class="fc-timeline-percent">'+mlFillPct+' %</div></div><div class="fc-timeline-HLD"><span class="fc-timeline-HLD-label">HLD</span>'+(f.HLD||'—')+'</div>';return'<div class="flight-card'+(SID===f.id?' selected':'')+'" onclick="selPanel('+f.id+', event)" ondblclick="openDetail('+f.id+')" style="animation:fadeInUp .25s ease '+(i*.04)+'s both"><div class="fc-accent"></div><div class="fc-main"><div class="status-stripe '+f.status+'"></div><div class="fc-num"><div class="fc-num-val">'+f.num+'</div><div class="fc-num-co">'+f.company+'</div></div><div class="fc-route"><span class="fc-iata">'+f.orig+'</span><span class="fc-arrow">→</span><span class="fc-iata dest">'+f.dest+'</span></div><div class="fc-aircraft"><div class="fc-ac-type">'+f.actype+'</div>'+(hj?'<div style="font-size:9px;color:var(--green);margin-top:2px">✓ J+1</div>':'')+(hu?'<div style="font-size:9px;color:var(--cyan);margin-top:1px">📦 '+f.uldLines.length+' ULD</div>':'')+chatBadge+'</div>'+timelineHTML+'<div class="status-badge '+f.status+'">'+sl+'</div></div></div>'}).join('');renderGantt()}
+
+// ═══ DETAIL MODAL (double-clic) ═══
+var detailFlightId=null,detailTab='uld';
+function openDetail(id){detailFlightId=id;detailTab='uld';markAllSeen(id);renderDetailView();document.getElementById('detail-modal').classList.add('open')}
+function closeDetailModal(){document.getElementById('detail-modal').classList.remove('open');detailFlightId=null}
+function setDetailTab(t){detailTab=t;renderDetailView()}
+
+function renderDetailView(){
+var f=flights.find(function(x){return x.id===detailFlightId});if(!f)return;
+document.getElementById('detail-title').textContent=f.num+' · '+f.orig+' → '+f.dest+' · '+fmtD(f.flightDate);
+var ul=f.uldLines||[];var lta=f.ltaList||[];var analyse=f.analyseList||[];var msgs=f.messages||[];
+var totalPds=ul.reduce(function(s,u){return s+(parseFloat(u.pds)||0)},0);
+var totalVol=ul.reduce(function(s,u){return s+(parseFloat(u.vol)||0)},0);
+var totalPcs=ul.reduce(function(s,u){return s+(parseInt(u.pcs)||0)},0);
+var posCount=ul.filter(function(u){return u.uld!=='BULK'}).length;
+var palLoaded=ul.filter(function(u){return u.uld&&u.uld!=='BULK'&&u.uld.substring(0,3)!=='AKE'}).length;
+var akeLoaded=ul.filter(function(u){return u.uld&&u.uld.substring(0,3)==='AKE'}).length;
+var palPlan=f.palettes||0;var akePlan=f.ake||0;
+var maxW=f.maxw||0;var maxPal=palPlan+akePlan;
+var fillPct=maxW>0?Math.round(totalPds/maxW*100):0;
+var fillCol=fillPct>90?'var(--red)':fillPct>70?'var(--amber)':'var(--green)';
+var palCol2=palPlan>0?(palLoaded>=palPlan?'var(--green)':palLoaded>0?'var(--amber)':'var(--red)'):'var(--text3)';
+var akeCol2=akePlan>0?(akeLoaded>=akePlan?'var(--green)':akeLoaded>0?'var(--amber)':'var(--red)'):'var(--text3)';
+
+// Stats bar
+var statsBar='<div class="detail-stats-bar">'+
+  '<div class="detail-stat-box"><div class="detail-stat-box-val" style="color:var(--text)">'+(totalPds/1000).toFixed(2)+'t</div><div class="detail-stat-box-label">Chargé</div>'+(maxW?'<div class="detail-stat-box-bar"><div class="detail-stat-box-fill" style="width:'+fillPct+'%;background:'+fillCol+'"></div></div>':'')+'</div>'+
+  '<div class="detail-stat-box"><div class="detail-stat-box-val" style="color:'+(maxW?fillCol:'var(--text3)')+'">'+(maxW?(maxW/1000).toFixed(0)+'t':'—')+'</div><div class="detail-stat-box-label">Max soute</div><div style="font-size:10px;color:'+fillCol+';font-weight:700;margin-top:2px">'+fillPct+'%</div></div>'+
+  '<div class="detail-stat-box"><div class="detail-stat-box-val" style="color:'+palCol2+'">'+palLoaded+'</div><div class="detail-stat-box-label">Palettes</div>'+(palPlan?'<div style="font-size:10px;color:'+palCol2+';font-weight:700;margin-top:2px">'+palLoaded+' / '+palPlan+'</div>':'')+'</div>'+
+  '<div class="detail-stat-box"><div class="detail-stat-box-val" style="color:'+akeCol2+'">'+akeLoaded+'</div><div class="detail-stat-box-label">AKE</div>'+(akePlan?'<div style="font-size:10px;color:'+akeCol2+';font-weight:700;margin-top:2px">'+akeLoaded+' / '+akePlan+'</div>':'')+'</div>'+
+  '<div class="detail-stat-box"><div class="detail-stat-box-val" style="color:var(--cyan)">'+totalVol.toFixed(1)+'</div><div class="detail-stat-box-label">Volume m³</div></div>'+
+  '<div class="detail-stat-box"><div class="detail-stat-box-val" style="color:var(--af-blue2)">'+lta.length+'</div><div class="detail-stat-box-label">LTA prévues</div></div>'+
+'</div>';
+
+// Tabs
+var tabs='<div class="detail-tabs">'+
+  '<div class="detail-tab'+(detailTab==='uld'?' active':'')+'" onclick="setDetailTab(\'uld\')">📦 ULD / Palettes ('+ul.length+')</div>'+
+  '<div class="detail-tab'+(detailTab==='lta'?' active':'')+'" onclick="setDetailTab(\'lta\')">📋 LTA — HO ('+lta.length+')</div>'+
+  (isAdminMode?'<div class="detail-tab'+(detailTab==='analyse'?' active':'')+'" onclick="setDetailTab(\'analyse\')">📊 Analyse départ'+(analyse.length?' ✓':'')+' </div>':'')+
+'</div>';
+
+// Tab content
+var tabContent='';
+if(detailTab==='uld'){
+  // Add ULD form
+  var addForm='<div class="uld-add-row">'+
+    '<input class="uld-add-input uld-name" id="add-uld-name" placeholder="PMC12345AF">'+
+    '<input class="uld-add-input uld-num" id="add-uld-pds" type="number" placeholder="Pds (kg)">'+
+    '<input class="uld-add-input uld-num" id="add-uld-vol" type="number" placeholder="Vol (m³)" step="0.1">'+
+    '<input class="uld-add-input" id="add-uld-shc" placeholder="SHC" style="width:70px">'+
+    '<input class="uld-add-input" id="add-uld-dst" placeholder="Dst" style="width:50px;text-transform:uppercase" value="'+(f.dest||'')+'">'+
+    '<button class="uld-add-btn" onclick="addULDLine()">+ Ajouter</button>'+
+  '</div>';
+  // ULD table
+  if(ul.length){
+    var rows=ul.map(function(u,i){var isBulk=u.uld==='BULK';return'<tr class="'+(isBulk?'uld-bulk':'')+'">'+
+      '<td style="font-size:11px;color:var(--text3)">'+(i+1)+'</td>'+
+      '<td class="uld-name">'+u.uld+'</td>'+
+      '<td>'+u.ori+'</td>'+
+      '<td style="color:var(--cyan);font-weight:600">'+u.dst+'</td>'+
+      '<td style="text-align:right">'+(u.pcs||0)+'</td>'+
+      '<td class="uld-weight" style="text-align:right">'+Number(u.pds||0).toLocaleString('fr-FR')+'</td>'+
+      '<td style="text-align:right">'+(u.vol||0)+'</td>'+
+      '<td><span style="background:rgba(0,104,204,.08);color:var(--af-blue2);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600">'+(u.shc||'—')+'</span></td>'+
+      '<td><button class="uld-row-delete" onclick="removeULDLine('+i+')" title="Supprimer">🗑</button></td>'+
+    '</tr>'}).join('');
+    tabContent=addForm+'<div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)"><table class="uld-table"><thead><tr><th>#</th><th>ULD</th><th>Ori</th><th>Dst</th><th style="text-align:right">Pcs</th><th style="text-align:right">Pds (kg)</th><th style="text-align:right">Vol</th><th>SHC</th><th></th></tr></thead><tbody>'+rows+'</tbody><tfoot><tr><td></td><td style="color:var(--text)">TOTAL</td><td></td><td></td><td style="text-align:right">'+totalPcs+'</td><td style="text-align:right;color:var(--text)">'+Number(Math.round(totalPds)).toLocaleString('fr-FR')+'</td><td style="text-align:right">'+totalVol.toFixed(1)+'</td><td colspan="2"></td></tr></tfoot></table></div>';
+  }else{
+    tabContent=addForm+'<div style="text-align:center;padding:40px;color:var(--text3)"><div style="font-size:28px;margin-bottom:8px">📦</div>Aucune palette. Ajoute-en manuellement ou importe un CLS.</div>';
+  }
+}else if(detailTab==='lta'){
+  // LTA tab
+  if(lta.length){
+    var ltaRows=lta.map(function(l,i){return'<tr>'+
+      '<td style="font-size:11px;color:var(--text3)">'+(i+1)+'</td>'+
+      '<td style="font-weight:600;color:var(--text)">'+l.awb+'</td>'+
+      '<td style="text-align:right">'+(l.pcs||0)+'</td>'+
+      '<td style="text-align:right;font-weight:600">'+(l.wt||0)+'</td>'+
+      '<td style="text-align:right">'+(l.vol||0)+'</td>'+
+      '<td><span style="background:rgba(0,104,204,.08);color:var(--af-blue2);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600">'+(l.shc||'—').substring(0,30)+'</span></td>'+
+      '<td style="font-size:11px;color:var(--text3)">'+(l.uld||'—')+'</td>'+
+    '</tr>'}).join('');
+    var ltaTotalW=lta.reduce(function(s,l){return s+(l.wt||0)},0);
+    var ltaTotalV=lta.reduce(function(s,l){return s+(l.vol||0)},0);
+    var ltaTotalP=lta.reduce(function(s,l){return s+(l.pcs||0)},0);
+    tabContent='<div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)"><table class="uld-table"><thead><tr><th>#</th><th>AWB</th><th style="text-align:right">Pcs</th><th style="text-align:right">Pds (kg)</th><th style="text-align:right">Vol (m³)</th><th>SHC</th><th>ULD assigné</th></tr></thead><tbody>'+ltaRows+'</tbody><tfoot><tr><td></td><td style="color:var(--text)">TOTAL</td><td style="text-align:right">'+ltaTotalP+'</td><td style="text-align:right;color:var(--text)">'+Number(Math.round(ltaTotalW)).toLocaleString('fr-FR')+'</td><td style="text-align:right">'+ltaTotalV.toFixed(2)+'</td><td colspan="2"></td></tr></tfoot></table></div>';
+  }else{
+    tabContent='<div style="text-align:center;padding:40px;color:var(--text3)"><div style="font-size:28px;margin-bottom:8px">📋</div>Aucune LTA. Importe un HO pour voir les réservations.</div>';
+  }
+}else if(detailTab==='analyse'){
+  // Analyse tab
+  if(!analyse.length){
+    tabContent='<div style="text-align:center;padding:40px;color:var(--text3)"><div style="font-size:32px;margin-bottom:10px">📊</div><div style="font-size:13px;font-weight:600;margin-bottom:6px">Aucun manifest de départ importé</div><span style="font-size:11px">Clique le bouton <strong style="color:#2db87a">📊 Import analyse</strong> dans la barre du vol ci-dessus.</span></div>';
+  }else{
+    var byAWB={};
+    analyse.forEach(function(r){
+      if(!byAWB[r.awb])byAWB[r.awb]={awb:r.awb,pcs:0,wt:0,ulds:[],orig:r.orig,dest:r.dest};
+      byAWB[r.awb].pcs+=r.pcs;
+      byAWB[r.awb].wt+=r.wt;
+      if(byAWB[r.awb].ulds.indexOf(r.uld)<0)byAWB[r.awb].ulds.push(r.uld);
+    });
+    var pl=lta;
+    var pm={};pl.forEach(function(l){pm[l.awb]=l});
+    var ak=Object.keys(byAWB);
+    var okA=ak.filter(function(k){return!!pm[k]});
+    var missA=pl.filter(function(l){return!byAWB[l.awb]});
+    var xtraA=ak.filter(function(k){return!pm[k]});
+    var uldSet={};analyse.forEach(function(r){if(r.uld)uldSet[r.uld]=true});
+    var uldArr=Object.keys(uldSet);
+    var akeC=uldArr.filter(function(u){return u.substring(0,3)==='AKE'}).length;
+    var palC=uldArr.length-akeC;
+    var totWt=analyse.reduce(function(s,r){return s+r.wt},0);
+    var totPcs=analyse.reduce(function(s,r){return s+r.pcs},0);
+    var sb=function(v,l,c){return'<div class="detail-stat-box"><div class="detail-stat-box-val" style="color:'+c+'">'+v+'</div><div class="detail-stat-box-label">'+l+'</div></div>'};
+    var kpis='<div class="detail-stats-bar" style="margin-bottom:12px">'+sb(uldArr.length,'ULD emb.','var(--text)')+sb(akeC,'AKE','var(--cyan)')+sb(palC,'Palettes','var(--af-blue2)')+(pl.length?sb(okA.length+'/'+pl.length,'Confirmées','var(--green)')+sb(missA.length,'Manquantes','var(--red)')+sb(xtraA.length,'Hors HO','var(--af-blue2)'):'')+'</div>';
+    var wrow='<div style="margin-bottom:12px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;display:flex;gap:20px;flex-wrap:wrap"><span>Poids embarqué : <strong>'+(Math.round(totWt)/1000).toFixed(2)+' t</strong></span><span>Pièces : <strong>'+totPcs+'</strong></span><span>AWB distincts : <strong>'+ak.length+'</strong></span></div>';
+    var cth='<thead><tr style="background:var(--af-blue2)"><th style="color:#fff;padding:5px 8px;text-align:left;font-size:10px">AWB</th><th style="color:#fff;padding:5px 8px;text-align:right;font-size:10px">Pcs</th><th style="color:#fff;padding:5px 8px;text-align:right;font-size:10px">Pds(kg)</th><th style="color:#fff;padding:5px 8px;text-align:left;font-size:10px">Route</th><th style="color:#fff;padding:5px 8px;text-align:left;font-size:10px">ULD(s)</th></tr></thead>';
+    var mkR=function(a,c){return'<tr style="border-bottom:1px solid var(--border)"><td style="padding:4px 8px;font-weight:600;color:'+c+'">'+a.awb+'</td><td style="padding:4px 8px;text-align:right">'+(a.pcs||0)+'</td><td style="padding:4px 8px;text-align:right;font-weight:600">'+Math.round(a.wt||0)+'</td><td style="padding:4px 8px;font-size:10px;color:var(--text3)">'+(a.orig||'')+' → '+(a.dest||'')+'</td><td style="padding:4px 8px;font-size:10px;color:var(--text3)">'+(a.ulds?a.ulds.join(', '):'—')+'</td></tr>'};
+    var mkRM=function(p){return'<tr style="border-bottom:1px solid var(--border)"><td style="padding:4px 8px;font-weight:600;color:var(--red)">'+p.awb+'</td><td style="padding:4px 8px;text-align:right">'+(p.pcs||0)+'</td><td style="padding:4px 8px;text-align:right;font-weight:600">'+Math.round(p.wt||0)+'</td><td style="padding:4px 8px;font-size:10px;color:var(--text3)">'+(p.shc||'—')+'</td><td style="padding:4px 8px;font-size:10px;color:var(--red)">Non embarquée</td></tr>'};
+    var mkSec=function(title,bg,brd,rows){return'<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;padding:6px 10px;border-radius:6px;border-left:3px solid '+brd+';background:'+bg+'">'+title+'</div><div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px"><table style="width:100%;border-collapse:collapse;font-size:11px">'+cth+'<tbody>'+rows+'</tbody></table></div></div>'};
+    var noWO=!pl.length?'<div style="margin-bottom:12px;padding:8px 12px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.3);border-radius:6px;font-size:11px;color:var(--amber)">⚠ Aucun HO importé — comparaison impossible. Importe le HO pour l\'analyse complète.</div>':'';
+    var s1=pl.length?mkSec('✅ Embarquées et prévues ('+okA.length+')','rgba(45,184,122,.07)','var(--green)',okA.length?okA.map(function(k){return mkR(byAWB[k],'var(--green)')}).join(''):'<tr><td colspan="5" style="padding:10px;text-align:center;color:var(--text3);font-size:11px">Aucune LTA prévue n\'a embarqué</td></tr>'):'';
+    var s2=pl.length?mkSec('❌ Prévues non embarquées ('+missA.length+')','rgba(220,50,47,.07)','var(--red)',missA.length?missA.map(function(p){return mkRM(p)}).join(''):'<tr><td colspan="5" style="padding:10px;text-align:center;color:var(--green);font-size:11px">✅ Toutes les LTA prévues ont embarqué !</td></tr>'):'';
+    var s3=pl.length?mkSec('➕ Hors HO — non prévues ('+xtraA.length+')','rgba(0,104,204,.07)','var(--af-blue2)',xtraA.length?xtraA.map(function(k){return mkR(byAWB[k],'var(--af-blue2)')}).join(''):'<tr><td colspan="5" style="padding:10px;text-align:center;color:var(--text3);font-size:11px">Aucune LTA hors WO</td></tr>'):'';
+    var sAll=!pl.length?mkSec('📦 LTA embarquées ('+ak.length+')','rgba(0,104,204,.07)','var(--af-blue2)',ak.map(function(k){return mkR(byAWB[k],'var(--text)')}).join('')):'';
+    tabContent=kpis+wrow+noWO+(pl.length?(s1+s2+s3):sAll);
+  }
+}
+
+// Chat sidebar
+var destColors={all:'all',ALL:'all',PPD:'ppd',MAG:'mag',PTA:'pta',PTO:'pto',GFC:'gfc'};
+var chatMsgs='';
+var visibleDetailMsgs=msgs.filter(function(m){return isForMe(m)});
+if(visibleDetailMsgs.length){
+  chatMsgs=visibleDetailMsgs.map(function(m){
+    var realIdx=msgs.indexOf(m);
+    var prioIcon=m.prio==='urgent'?'🚨':m.prio==='warning'?'⚠️':'ℹ️';
+    var dests=getMsgDests(m.dest);var destTag=dests.map(function(d){return'<span class="chat-dest-tag '+(destColors[d]||'all')+'" style="font-size:8px">→ '+d+'</span>'}).join('');
+    var ackBtn='';
+    if((m.prio==='urgent'||m.prio==='warning')&&!m.seen)ackBtn='<div class="chat-msg-ack" onclick="ackMsgDetail('+realIdx+')" style="font-size:8px;padding:2px 6px;margin-top:3px">✓ Vu</div>';
+    else if(m.seen)ackBtn='<div style="font-size:8px;color:var(--green);margin-top:2px">✓ '+m.seenBy+' '+m.seenAt+'</div>';
+    var seenClass=(m.seen&&m.prio==='urgent')?' seen-msg':'';
+    return'<div class="chat-msg '+m.prio+seenClass+'" style="padding:6px 8px;font-size:10px"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-weight:700;font-size:9px">'+prioIcon+' '+(m.author||'')+destTag+'</span><span style="font-size:8px;color:var(--text3)">'+(m.time||'')+'</span></div><div style="font-size:10.5px;line-height:1.3">'+m.text+'</div>'+ackBtn+'</div>';
+  }).join('');
+}else{
+  chatMsgs='<div style="text-align:center;padding:20px;color:var(--text3);font-size:10px">Aucun message pour votre service</div>';
+}
+
+var chatHTML='<div class="detail-chat-title">💬 Chat ('+visibleDetailMsgs.length+')</div>'+
+  '<div class="detail-chat-msgs" id="detail-chat-msgs">'+chatMsgs+'</div>'+
+  '<div class="detail-chat-input">'+
+    '<div class="detail-chat-input-row">'+
+      '<input class="chat-author-input" id="detail-chat-author" placeholder="Nom" value="'+userProfile.name+'" style="width:65px;font-size:9px;padding:3px 6px">'+
+      '<select class="chat-prio-select" id="detail-chat-prio" style="font-size:9px;padding:3px 4px"><option value="info">Info</option><option value="warning">Warning</option><option value="urgent">Urgent</option></select>'+
+      '</div><div class="detail-chat-input-row" style="flex-wrap:wrap;gap:3px">'+buildDestGroup('cdg-detail')+
+    '</div>'+
+    '<div class="detail-chat-input-row">'+
+      '<textarea class="chat-input" id="detail-chat-text" placeholder="Message..." style="font-size:10px;padding:5px 8px;min-height:28px" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendDetailMsg()}"></textarea>'+
+      '<button class="chat-send-btn" onclick="sendDetailMsg()" style="font-size:10px;padding:5px 10px">→</button>'+
+    '</div>'+
+  '</div>';
+
+// Assemble
+document.getElementById('detail-body').innerHTML=
+  '<div class="detail-full">'+
+    '<div class="detail-left">'+
+      '<div class="detail-topbar"><div class="detail-topbar-num">'+f.num+'</div><div class="detail-topbar-route">'+f.orig+' → '+f.dest+'</div><div class="detail-topbar-info">'+fmtD(f.flightDate)+' · HLD '+(f.HLD||'—')+' · '+(f.actype||'—')+'</div><button onclick="document.getElementById(\'analyse-input\').click()" style="margin-left:auto;padding:4px 12px;background:rgba(45,184,122,.15);border:1px solid rgba(45,184,122,.4);border-radius:6px;color:#2db87a;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">📊 '+(analyse.length?'Ré-importer':'Import analyse')+'</button></div>'+
+      statsBar+tabs+
+      '<div class="detail-tab-content">'+tabContent+'</div>'+
+    '</div>'+
+    '<div class="detail-right">'+chatHTML+'</div>'+
+  '</div>';
+// Scroll chat to bottom
+setTimeout(function(){var el=document.getElementById('detail-chat-msgs');if(el)el.scrollTop=el.scrollHeight},50);
+}
+
+function addULDLine(){
+var f=flights.find(function(x){return x.id===detailFlightId});if(!f)return;
+var name=(document.getElementById('add-uld-name').value||'').trim().toUpperCase();
+if(!name){alert('Numéro ULD requis');return}
+var pds=parseFloat(document.getElementById('add-uld-pds').value)||0;
+var vol=parseFloat(document.getElementById('add-uld-vol').value)||0;
+var shc=(document.getElementById('add-uld-shc').value||'').trim();
+var dst=(document.getElementById('add-uld-dst').value||f.dest||'').trim().toUpperCase();
+if(!f.uldLines)f.uldLines=[];
+f.uldLines.push({uld:name,ori:f.orig||'CDG',dst:dst,pcs:1,pds:Math.round(pds),vol:Math.round(vol*10)/10,cntr:'PLD',hauteur:'',shc:shc,pos:''});
+// Update flight tonnage
+f.realTonnage=f.uldLines.reduce(function(s,u){return s+(parseFloat(u.pds)||0)},0);
+f.realULD=f.uldLines.filter(function(u){return u.uld!=='BULK'}).length;
+save();renderDetailView();renderList();
+}
+
+function removeULDLine(idx){
+var f=flights.find(function(x){return x.id===detailFlightId});if(!f||!f.uldLines)return;
+f.uldLines.splice(idx,1);
+f.realTonnage=f.uldLines.reduce(function(s,u){return s+(parseFloat(u.pds)||0)},0);
+f.realULD=f.uldLines.filter(function(u){return u.uld!=='BULK'}).length;
+save();renderDetailView();renderList();
+}
+
+function sendDetailMsg(){
+var f=flights.find(function(x){return x.id===detailFlightId});if(!f)return;
+var text=(document.getElementById('detail-chat-text').value||'').trim();if(!text)return;
+var author=(document.getElementById('detail-chat-author').value||'').trim()||userProfile.name;
+var dest=getDestFromGroup('cdg-detail');
+var prio=document.getElementById('detail-chat-prio').value||'info';
+var now=new Date();var timeStr=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+if(!f.messages)f.messages=[];
+f.messages.push({text:text,author:author,prio:prio,dest:dest,time:timeStr,seen:false});
+if(prio==='urgent'&&f.status!=='cloture')f.status='alerte';
+save();renderDetailView();renderList();
+}
+
+function ackMsgDetail(msgIdx){
+var f=flights.find(function(x){return x.id===detailFlightId});if(!f||!f.messages||!f.messages[msgIdx])return;
+var author=(document.getElementById('detail-chat-author').value||'').trim()||userProfile.name;
+var now=new Date();var seenAt=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+f.messages[msgIdx].seen=true;f.messages[msgIdx].seenBy=author;f.messages[msgIdx].seenAt=seenAt;
+var hasUnseenUrgent=f.messages.some(function(m){return m.prio==='urgent'&&!m.seen});
+if(!hasUnseenUrgent&&f.status==='alerte')f.status=f.realTonnage>0?'cloture':'encours';
+save();renderDetailView();renderList();
+}
+
+// ═══ CSV IMPORT ═══
+function handleCSVImport(input){var file=input.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(e){var text=e.target.result,sep=text.indexOf(';')>=0?';':',',lines=text.split('\n').filter(function(l){return l.trim().length>0});if(lines.length<2){alert('Fichier vide.');return}var hdr=lines[0].split(sep).map(function(h){return h.trim().replace(/"/g,'')});var rows=[];for(var i=1;i<lines.length;i++){var c=lines[i].split(sep).map(function(x){return x.trim().replace(/"/g,'')});if(c.length>=8)rows.push(c)}
+var c0=0,cU=fi(hdr,'ULD',1),cO=fi(hdr,'Ori',2),cD=fi(hdr,'Dst',3),cP=fi(hdr,'Pcs',6),cW=fip(hdr,'Pds',7),cV=fi(hdr,'Vol',9),cC=fi(hdr,'Cntr',10),cH=fi(hdr,'Hauteur',11),cS=fi(hdr,'Shc',13),cPos=fi(hdr,'Pos',30);
+var info=rows[0][c0]||'',parts=info.split('/'),fNum=parts[0]||'',fDate=parseCLSDate(parts[1]||''),fOrig=parts[2]||'CDG',fDest=rows[0][cD]||'';
+var uldLines=[],totalPds=0,totalPcs=0,totalVol=0,uldCount=0;
+rows.forEach(function(r){var uld=r[cU]||'',pds=parseFloat(r[cW])||0,pcs=parseInt(r[cP])||0,vol=parseFloat(r[cV])||0;totalPds+=pds;totalPcs+=pcs;totalVol+=vol;if(uld&&uld!=='BULK')uldCount++;uldLines.push({uld:uld,ori:r[cO]||'',dst:r[cD]||'',pcs:pcs,pds:Math.round(pds),vol:Math.round(vol*10)/10,cntr:r[cC]||'',hauteur:r[cH]||'',shc:r[cS]||'',pos:r[cPos]||''})});
+PI={num:fNum,orig:fOrig,dest:fDest,flightDate:fDate,realTonnage:Math.round(totalPds),realULD:uldCount,lta:totalPcs,volume:Math.round(totalVol*10)/10,uldLines:uldLines,rowCount:rows.length};showImport()};reader.readAsText(file,'UTF-8');input.value=''}
+function fi(h,n,d){var i=h.indexOf(n);return i>=0?i:d}
+function fip(h,n,d){for(var i=0;i<h.length;i++)if(h[i].indexOf(n)>=0)return i;return d}
+function normFlight(n){if(!n)return'';n=n.toUpperCase().trim();var m=n.match(/^([A-Z]+)(\d+)([A-Z]?)$/);if(!m)return n;return m[1]+parseInt(m[2],10)+(m[3]||'')}
+function parseCLSDate(s){if(!s)return new Date().toISOString().split('T')[0];var m={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'};var r=s.match(/(\d{1,2})([A-Za-z]{3})(\d{2,4})/);if(!r)return new Date().toISOString().split('T')[0];var d=r[1].padStart(2,'0'),mo=m[r[2].charAt(0).toUpperCase()+r[2].slice(1).toLowerCase()]||'01',y=r[3];if(y.length===2)y='20'+y;return y+'-'+mo+'-'+d}
+function showImport(){var d=PI,ex=flights.find(function(f){return normFlight(f.num)===normFlight(d.num)&&f.flightDate===d.flightDate});
+document.getElementById('import-body').innerHTML='<div style="text-align:center;margin-bottom:16px"><div style="font-size:32px;margin-bottom:8px">📥</div><div style="font-size:16px;font-weight:700;color:var(--text);font-style:italic">'+d.num+'</div><div style="font-size:12px;color:var(--text3)">'+d.orig+' → '+d.dest+' · '+fmtD(d.flightDate)+'</div></div><div class="import-result"><h3>Données extraites</h3><div class="import-result-grid"><div class="import-result-item"><div class="import-result-label">Tonnage réel</div><div class="import-result-val" style="color:var(--text)">'+(d.realTonnage/1000).toFixed(2)+' t</div></div><div class="import-result-item"><div class="import-result-label">Positions ULD</div><div class="import-result-val" style="color:var(--cyan)">'+d.realULD+'</div></div><div class="import-result-item"><div class="import-result-label">Pièces (LTA)</div><div class="import-result-val" style="color:var(--af-blue2)">'+d.lta+'</div></div><div class="import-result-item"><div class="import-result-label">Lignes détail</div><div class="import-result-val">'+d.uldLines.length+'</div></div></div></div>'+(ex?'<div style="margin-top:12px;padding:10px 14px;background:rgba(45,184,122,.08);border:1px solid rgba(45,184,122,.2);border-radius:8px;font-size:12px;color:var(--green)"><strong>Vol trouvé !</strong> Données J+1 et détail ULD seront mis à jour.</div>':'<div style="margin-top:12px;padding:10px 14px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;font-size:12px;color:var(--amber)">Vol non trouvé. Un nouveau vol sera créé.</div>');
+document.getElementById('import-footer').innerHTML='<button class="btn btn-cancel" onclick="closeImportModal()">Annuler</button><button class="btn btn-primary" onclick="confirmImport()">'+(ex?'METTRE À JOUR':'CRÉER')+'</button>';
+document.getElementById('import-modal').classList.add('open')}
+function confirmImport(){var d=PI;if(!d)return;var ex=flights.find(function(f){return normFlight(f.num)===normFlight(d.num)&&f.flightDate===d.flightDate});if(ex){ex.realTonnage=d.realTonnage;ex.realULD=d.realULD;ex.lta=d.lta;ex.uldLines=d.uldLines;if(!ex.volume)ex.volume=Math.round(d.volume);ex.status='cloture'}else{flights.push({id:NID++,num:d.num,company:'Air France',orig:d.orig,dest:d.dest,flightDate:d.flightDate,HLD:'',actype:'',tonnage:d.realTonnage,maxw:0,volume:Math.round(d.volume),palettes:0,ake:0,realTonnage:d.realTonnage,realULD:d.realULD,lta:d.lta,revenue:0,uldLines:d.uldLines,status:'cloture'})}save();closeImportModal();SD=d.flightDate;document.getElementById('date-filter').value=SD;renderList();PI=null}
+function closeImportModal(){document.getElementById('import-modal').classList.remove('open');PI=null}
+
+// ═══ WO (WORK ORDER) IMPORT ═══
+var WOI=null;
+function handleWOImport(input){var file=input.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(e){
+var text=e.target.result;var sep=text.indexOf(';')>=0?';':',';
+var lines=text.split('\n').filter(function(l){return l.trim().length>0});
+if(lines.length<5){alert('Fichier WO invalide.');return}
+// Parse flight info from early lines (look for AF pattern)
+var flightNum='',flightDate='',flightHLD='',orig='CDG',dest='';
+for(var i=0;i<Math.min(10,lines.length);i++){
+  var line=lines[i].replace(/"/g,'');
+  var fm=line.match(/(AF\d{3,4})\s+(\d{1,2}\s+[A-Za-z]{3}\s+\d{4})\s+(\d{2}:\d{2})/);
+  if(fm){flightNum=fm[1];flightDate=parseWODate(fm[2]);flightHLD=fm[3];break}
+  var fm2=line.match(/(AF\d{3,4})/);
+  if(fm2&&!flightNum)flightNum=fm2[1];
+}
+// Find headers line (contains AWB)
+var hdrIdx=-1;
+for(var i=0;i<Math.min(15,lines.length);i++){
+  if(lines[i].indexOf('AWB')>=0&&lines[i].indexOf('Pcs')>=0){hdrIdx=i;break}
+}
+if(hdrIdx<0){alert('Headers AWB non trouvés dans le fichier.');return}
+var headers=lines[hdrIdx].split(sep).map(function(h){return h.trim().replace(/"/g,'')});
+// Find column indices
+var cAWB=findCol(headers,'AWB',0);
+var cPcs=findCol(headers,'Pcs',1);
+var cWt=findColP(headers,'Wt',4);
+var cVol=findColP(headers,'Vol',5);
+var cSHC=findCol(headers,'SHC',7);
+var cULD=findColP(headers,'ULD',8);
+var cSegOff=findColP(headers,'Seg Off',10);
+var cCom=findColP(headers,'Commodity',6);
+// Parse LTA lines (only rows with AWB number)
+var ltaList=[],totalWt=0,totalVol=0,totalPcs=0;
+for(var i=hdrIdx+1;i<lines.length;i++){
+  var cols=lines[i].split(sep).map(function(x){return x.trim().replace(/"/g,'')});
+  if(cols.length<5)continue;
+  var awb=cols[cAWB]||'';
+  if(!awb||!awb.match(/\d{3}-\d{7,}/))continue; // Only main AWB lines
+  var wt=parseFloat(cols[cWt])||0;
+  var vol=parseFloat(cols[cVol])||0;
+  var pcs=parseInt(cols[cPcs])||0;
+  var shc=cols[cSHC]||'';
+  var uld=cols[cULD]||'N/A';
+  var segOff=cols[cSegOff]||'';
+  if(!dest&&segOff)dest=segOff.trim();
+  totalWt+=wt;totalVol+=vol;totalPcs+=pcs;
+  ltaList.push({awb:awb.trim(),pcs:pcs,wt:Math.round(wt*10)/10,vol:Math.round(vol*100)/100,shc:shc.trim(),uld:uld.trim(),commodity:(cols[cCom]||'').trim().substring(0,60)});
+}
+WOI={num:flightNum,orig:orig,dest:dest,flightDate:flightDate,HLD:flightHLD,tonnage:Math.round(totalWt),volume:Math.round(totalVol*10)/10,ltaCount:ltaList.length,totalPcs:totalPcs,ltaList:ltaList};
+showWOResult()};reader.readAsText(file,'UTF-8');input.value=''}
+
+function parseWODate(s){if(!s)return new Date().toISOString().split('T')[0];var m={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'};var p=s.trim().split(/\s+/);if(p.length<3)return new Date().toISOString().split('T')[0];var d=p[0].padStart(2,'0'),mo=m[p[1].charAt(0).toUpperCase()+p[1].slice(1).toLowerCase()]||'01',y=p[2];return y+'-'+mo+'-'+d}
+function findCol(h,n,d){for(var i=0;i<h.length;i++)if(h[i]===n)return i;return d}
+function findColP(h,n,d){for(var i=0;i<h.length;i++)if(h[i].indexOf(n)>=0)return i;return d}
+
+function showWOResult(){var d=WOI;var ex=flights.find(function(f){return normFlight(f.num)===normFlight(d.num)&&f.flightDate===d.flightDate});
+// Build LTA preview table (first 8)
+var preview=d.ltaList.slice(0,8).map(function(l,i){return'<tr><td style="font-size:11px;color:var(--text3)">'+(i+1)+'</td><td style="font-weight:600;color:var(--text)">'+l.awb+'</td><td style="text-align:right">'+l.pcs+'</td><td style="text-align:right;font-weight:600">'+l.wt+'</td><td style="text-align:right">'+l.vol+'</td><td><span style="font-size:10px;background:rgba(0,104,204,.08);color:var(--af-blue2);padding:2px 5px;border-radius:3px">'+l.shc.substring(0,25)+'</span></td></tr>'}).join('');
+var moreText=d.ltaList.length>8?'<div style="text-align:center;padding:6px;font-size:11px;color:var(--text3)">+ '+(d.ltaList.length-8)+' autres LTA...</div>':'';
+
+document.getElementById('wo-body').innerHTML=
+'<div style="text-align:center;margin-bottom:16px"><div style="font-size:32px;margin-bottom:8px">📋</div><div style="font-size:18px;font-weight:700;color:var(--text);font-style:italic">'+d.num+'</div><div style="font-size:12px;color:var(--text3)">'+d.orig+' → '+d.dest+' · '+fmtD(d.flightDate)+' · HLD '+d.HLD+'</div></div>'+
+'<div class="import-result"><h3>Données Booking extraites</h3><div class="import-result-grid">'+
+'<div class="import-result-item"><div class="import-result-label">LTA (shipments)</div><div class="import-result-val" style="color:var(--af-blue2)">'+d.ltaCount+'</div></div>'+
+'<div class="import-result-item"><div class="import-result-label">Pièces total</div><div class="import-result-val" style="color:var(--cyan)">'+d.totalPcs+'</div></div>'+
+'<div class="import-result-item"><div class="import-result-label">Poids réservé</div><div class="import-result-val" style="color:var(--text)">'+(d.tonnage/1000).toFixed(2)+' t</div></div>'+
+'<div class="import-result-item"><div class="import-result-label">Volume réservé</div><div class="import-result-val" style="color:var(--green)">'+d.volume+' m³</div></div>'+
+'</div></div>'+
+'<div style="margin-top:14px"><div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Aperçu des LTA</div>'+
+'<div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:var(--af-blue2)"><th style="color:#fff;padding:6px 8px;font-size:10px;text-align:left">#</th><th style="color:#fff;padding:6px 8px;font-size:10px;text-align:left">AWB</th><th style="color:#fff;padding:6px 8px;font-size:10px;text-align:right">Pcs</th><th style="color:#fff;padding:6px 8px;font-size:10px;text-align:right">Pds</th><th style="color:#fff;padding:6px 8px;font-size:10px;text-align:right">Vol</th><th style="color:#fff;padding:6px 8px;font-size:10px;text-align:left">SHC</th></tr></thead><tbody>'+preview+'</tbody></table></div>'+moreText+'</div>'+
+(ex?'<div style="margin-top:12px;padding:10px 14px;background:rgba(45,184,122,.08);border:1px solid rgba(45,184,122,.2);border-radius:8px;font-size:12px;color:var(--green)"><strong>Vol trouvé !</strong> Les données de booking seront ajoutées.</div>':'<div style="margin-top:12px;padding:10px 14px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;font-size:12px;color:var(--amber)">Nouveau vol — la fiche sera créée avec ces données de booking.</div>');
+
+document.getElementById('wo-footer').innerHTML='<button class="btn btn-cancel" onclick="closeWOModal()">Annuler</button><button class="btn btn-primary" onclick="confirmWO()">'+(ex?'METTRE À JOUR':'CRÉER LE VOL')+'</button>';
+document.getElementById('wo-modal').classList.add('open')}
+
+function confirmWO(){var d=WOI;if(!d)return;
+var ex=flights.find(function(f){return normFlight(f.num)===normFlight(d.num)&&f.flightDate===d.flightDate});
+if(ex){
+  ex.tonnage=d.tonnage;
+  ex.volume=Math.round(d.volume);
+  ex.lta=d.ltaCount;
+  ex.HLD=d.HLD||ex.HLD;
+  ex.ltaList=d.ltaList;
+}else{
+  flights.push({id:NID++,num:d.num,company:'Air France',orig:d.orig,dest:d.dest,flightDate:d.flightDate,HLD:d.HLD,actype:'',tonnage:d.tonnage,maxw:0,volume:Math.round(d.volume),palettes:0,ake:0,realTonnage:0,realULD:0,lta:d.ltaCount,revenue:0,uldLines:[],ltaList:d.ltaList,status:'prevu'});
+}
+save();closeWOModal();SD=d.flightDate;document.getElementById('date-filter').value=SD;renderList();WOI=null}
+function closeWOModal(){document.getElementById('wo-modal').classList.remove('open');WOI=null}
+
+function parseAnalyseDate(s){if(!s)return new Date().toISOString().split('T')[0];var m={'JAN':'01','FEB':'02','MAR':'03','APR':'04','MAY':'05','JUN':'06','JUL':'07','AUG':'08','SEP':'09','OCT':'10','NOV':'11','DEC':'12'};var p=s.trim().split('-');if(p.length<3)return new Date().toISOString().split('T')[0];return p[2]+'-'+(m[p[1].toUpperCase()]||'01')+'-'+p[0].padStart(2,'0')}
+
+function handleAnalyseImport(input){
+var file=input.files[0];if(!file)return;
+var reader=new FileReader();
+reader.onload=function(e){
+  var text=e.target.result;
+  var sep=text.indexOf(';')>=0?';':',';
+  var lines=text.split('\n').filter(function(l){return l.trim().replace(/;/g,'').replace(/,/g,'').length>0});
+  var carrier='AF',rawNum='',flightDate='';
+  for(var i=0;i<Math.min(15,lines.length);i++){
+    var c=lines[i].split(sep).map(function(x){return x.trim().replace(/"/g,'')});
+    if(c[0]==='Flight Carrier')carrier=c[2]||'AF';
+    if(c[0]==='Flight Number')rawNum=c[2]||'';
+    if(c[0]==='Flight Date')flightDate=parseAnalyseDate(c[2]);
+  }
+  var flightNum=carrier+rawNum;
+  var hdrIdx=-1;
+  for(var i=0;i<lines.length;i++){if(lines[i].indexOf('ULDNUM')>=0){hdrIdx=i;break}}
+  if(hdrIdx<0){alert('Format de fichier non reconnu (ULDNUM introuvable).');return}
+  var analyseList=[];
+  for(var i=hdrIdx+2;i<lines.length;i++){
+    var c=lines[i].split(sep).map(function(x){return x.trim().replace(/"/g,'')});
+    if(c.length<6)continue;
+    var awb=c[1]||'';
+    if(!awb.match(/\d{3}-\d+/))continue;
+    var wt=parseFloat((c[6]||'0').replace(',','.'));
+    analyseList.push({uld:c[0]||'',awb:awb,orig:c[2]||'',dest:c[3]||'',commodity:c[4]||'',pcs:parseInt(c[5])||0,wt:Math.round((wt||0)*10)/10});
+  }
+  if(!analyseList.length){alert('Aucune donnée trouvée dans ce fichier.');return}
+  var f=null;
+  if(detailFlightId)f=flights.find(function(x){return x.id===detailFlightId});
+  if(!f&&flightNum)f=flights.find(function(x){return normFlight(x.num)===normFlight(flightNum)&&x.flightDate===flightDate});
+  if(!f){alert('Vol '+flightNum+' non trouvé dans l\'application.');return}
+  f.analyseList=analyseList;
+  save();
+  detailFlightId=f.id;
+  detailTab='analyse';
+  renderDetailView();
+  if(!document.getElementById('detail-modal').classList.contains('open'))document.getElementById('detail-modal').classList.add('open');
+};
+reader.readAsText(file,'UTF-8');
+input.value=''
+}
+
+// ═══ SIDE PANEL ═══
+function selPanel(id,e){if(SID===id){if(e&&e.target&&e.target.closest&&e.target.closest('.fc-milestone')){return}SID=null;document.getElementById('side-panel').classList.remove('open');renderList();return}SID=id;renderList();markAllSeen(id);var f=flights.find(function(x){return x.id===id});if(!f)return;var sp=document.getElementById('side-panel');sp.classList.add('open');var pct=f.maxw>0?Math.round(f.tonnage/f.maxw*100):0,bc=pct>90?'var(--red)':pct>70?'var(--amber)':'var(--green)',sl=f.status==='prevu'?'PRÉVU':f.status==='encours'?'EN COURS':f.status==='cloture'?'CLÔTURÉ':'⚠ ALERTE';
+var tULD=(f.palettes||0)+(f.ake||0);
+var sc2=calcScore(f),pH='';
+if(f.realTonnage||f.realULD||f.lta||f.revenue){pH='<div class="sp-perf-section"><div class="sp-perf-title">Performance J+1</div>';if(f.realTonnage&&f.tonnage)pH+=pB('Tonnage',f.realTonnage,f.tonnage,' kg');if(f.realULD&&tULD)pH+=pB('Positions',f.realULD,tULD,' ULD');if(f.lta)pH+='<div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid #ECECEC;margin-top:6px"><span style="font-size:11px;color:var(--text2)">LTA</span><span style="font-size:13px;font-weight:700;color:var(--af-blue2)">'+f.lta+'</span></div>';if(f.revenue)pH+='<div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid #ECECEC"><span style="font-size:11px;color:var(--text2)">Recettes</span><span style="font-size:13px;font-weight:700;color:var(--green)">'+Number(f.revenue).toLocaleString('fr-FR')+' €</span></div>';if(sc2!==null)pH+='<div class="sp-score"><div class="sp-score-val" style="color:'+scC(sc2)+'">'+sc2+'%</div><div class="sp-score-label">Réalisation HO</div></div>';pH+='</div>'}
+var chatHTML = renderChatSection(f);
+sp.innerHTML='<div style="padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:22px;font-weight:700;color:var(--text);font-style:italic">'+f.num+'</div><div style="font-size:11px;color:var(--text3);margin-top:3px">'+f.orig+' → '+f.dest+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><div class="status-badge '+f.status+'" style="font-size:9px">'+sl+'</div><button style="padding:3px 8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text3);cursor:pointer" onclick="closePanel()">✕</button></div></div><div class="sp-body"><div class="sp-info-grid">'+sC('Date',fmtD(f.flightDate),'var(--af-blue2)')+sC('HLD',f.HLD||'—')+sC('Avion',f.actype||'—')+sC('Tonnage prévu',(f.tonnage/1000).toFixed(2)+' t','var(--text)')+sC('Max soute',f.maxw?(f.maxw/1000).toFixed(0)+' t':'—')+sC('Volume',f.volume?f.volume+' m³':'—')+sC('PAL dispo',f.palettes||'—')+sC('AKE dispo',f.ake||'—','var(--cyan)')+'</div>'+chatHTML+pH+'<div class="sp-actions" style="margin-top:12px"><button class="sp-action-btn edit" onclick="openEdit('+f.id+')">✏ Modifier</button><button class="sp-action-btn detail" onclick="openDetail('+f.id+')">📦 Détail</button><button class="sp-action-btn delete" onclick="openDel('+f.id+')">🗑</button></div></div>'}
+function sC(l,v,c){return'<div class="sp-cell"><div class="sp-cell-label">'+l+'</div><div class="sp-cell-val" style="color:'+(c||'var(--text)')+'">'+v+'</div></div>'}
+function closePanel(){SID=null;document.getElementById('side-panel').classList.remove('open');renderList()}
+function calcMLF(f){
+var maxW=f.maxw||0;
+var maxVol=(f.palettes||0)*10+(f.ake||0)*3.5;
+var realW=f.realTonnage||0;
+var realVol=(f.uldLines||[]).reduce(function(s,u){return s+(parseFloat(u.vol)||0)},0);
+if(!realVol)realVol=f.volume||0;
+var wF=maxW>0?realW/maxW:0;
+var vF=maxVol>0?realVol/maxVol:0;
+if(!wF&&!vF)return null;
+return Math.round(Math.max(wF,vF)*100)}
+function calcScore(f){if(!f.realTonnage&&!f.realULD)return null;var s=[];if(f.tonnage>0&&f.realTonnage>0)s.push(Math.round(f.realTonnage/f.tonnage*100));var t=(f.palettes||0)+(f.ake||0);if(t>0&&f.realULD>0)s.push(Math.round(f.realULD/t*100));if(!s.length)return null;return Math.round(s.reduce(function(a,b){return a+b},0)/s.length)}
+function scC(s){return s>=80?'var(--green)':s>=50?'var(--amber)':'var(--red)'}
+function pB(l,a,p,u){var pc=p>0?Math.min(100,Math.round(a/p*100)):0,bc=pc>=80?'var(--green)':pc>=50?'var(--amber)':'var(--red)';return'<div class="sp-perf-row"><div class="sp-perf-label">'+l+'</div><div class="sp-perf-bar"><div class="sp-perf-fill" style="width:'+pc+'%;background:'+bc+'"></div></div><div class="sp-perf-val" style="color:'+bc+'">'+a+(u||'')+' / '+p+(u||'')+'</div></div>'}
+
+// ═══ CREATE/EDIT ═══
+function openCreateModal(){EID=null;document.getElementById('modal-title').textContent='Créer un nouveau vol';document.getElementById('modal-save-btn').textContent='CRÉER LE VOL';var fs=['num','company','orig','dest','date','HLD','actype','tonnage','maxw','volume','palettes','ake','realTonnage','realULD','lta','revenue','status'];fs.forEach(function(k){var e=document.getElementById('f-'+k);if(!e)return;if(k==='company')e.value='Air France';else if(k==='orig')e.value='CDG';else if(k==='date')e.value=SD;else if(k==='HLD')e.value='14:00';else if(k==='actype')e.selectedIndex=0;else if(k==='status')e.value='prevu';else e.value=''});document.getElementById('flight-modal').classList.add('open')}
+function openEdit(id){var f=flights.find(function(x){return x.id===id});if(!f)return;EID=id;document.getElementById('modal-title').textContent='Modifier le vol';document.getElementById('modal-save-btn').textContent='ENREGISTRER';document.getElementById('f-num').value=f.num;document.getElementById('f-company').value=f.company;document.getElementById('f-orig').value=f.orig;document.getElementById('f-dest').value=f.dest;document.getElementById('f-date').value=f.flightDate||SD;document.getElementById('f-HLD').value=f.HLD;document.getElementById('f-actype').value=f.actype;document.getElementById('f-tonnage').value=f.tonnage||'';document.getElementById('f-maxw').value=f.maxw||'';document.getElementById('f-volume').value=f.volume||'';document.getElementById('f-palettes').value=f.palettes||'';document.getElementById('f-ake').value=f.ake||'';document.getElementById('f-realTonnage').value=f.realTonnage||'';document.getElementById('f-realULD').value=f.realULD||'';document.getElementById('f-lta').value=f.lta||'';document.getElementById('f-revenue').value=f.revenue||'';document.getElementById('f-status').value=f.status;document.getElementById('flight-modal').classList.add('open')}
+function closeFlightModal(){document.getElementById('flight-modal').classList.remove('open')}
+function saveFlight(){var n=document.getElementById('f-num').value.trim(),d=document.getElementById('f-dest').value.trim().toUpperCase();if(!n||!d){alert('N° vol et destination requis.');return}var data={num:n,dest:d,company:document.getElementById('f-company').value.trim()||'Air France',orig:document.getElementById('f-orig').value.trim().toUpperCase()||'CDG',flightDate:document.getElementById('f-date').value||SD,HLD:document.getElementById('f-HLD').value,actype:document.getElementById('f-actype').value,tonnage:parseInt(document.getElementById('f-tonnage').value)||0,maxw:parseInt(document.getElementById('f-maxw').value)||0,volume:parseInt(document.getElementById('f-volume').value)||0,palettes:parseInt(document.getElementById('f-palettes').value)||0,ake:parseInt(document.getElementById('f-ake').value)||0,realTonnage:parseInt(document.getElementById('f-realTonnage').value)||0,realULD:parseInt(document.getElementById('f-realULD').value)||0,lta:parseInt(document.getElementById('f-lta').value)||0,revenue:parseInt(document.getElementById('f-revenue').value)||0,status:document.getElementById('f-status').value};if(EID!==null){var idx=flights.findIndex(function(f){return f.id===EID});if(idx>=0){data.id=EID;data.uldLines=flights[idx].uldLines||[];data.messages=flights[idx].messages||[];data.ltaList=flights[idx].ltaList||[];data.milestones=flights[idx].milestones||{};data.analyseList=flights[idx].analyseList||[];flights[idx]=data}}else{data.id=NID++;data.uldLines=[];data.messages=[];data.milestones={};flights.push(data)}save();closeFlightModal();renderList();if(SID)selPanel(SID)}
+function openDel(id){var f=flights.find(function(x){return x.id===id});if(!f)return;DID=id;document.getElementById('delete-info').textContent=f.num+' · '+f.orig+' → '+f.dest;document.getElementById('delete-modal').classList.add('open')}
+function closeDeleteModal(){document.getElementById('delete-modal').classList.remove('open');DID=null}
+function confirmDelete(){if(!DID)return;flights=flights.filter(function(f){return f.id!==DID});if(SID===DID){SID=null;document.getElementById('side-panel').classList.remove('open')}save();closeDeleteModal();renderList()}
+
+// ═══ MILESTONES ═══
+function toggleMilestone(e,flightId,key){
+if(e&&e.stopPropagation)e.stopPropagation();
+var f=flights.find(function(x){return x.id===flightId});if(!f)return;
+if(!f.milestones)f.milestones={};
+if(f.milestones[key]){
+  // Un-toggle: remove milestone
+  delete f.milestones[key];
+}else{
+  // Set milestone with current time
+  var now=new Date();
+  f.milestones[key]=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+}
+// Auto update status based on milestones
+var ml=f.milestones;
+var allDone=ml.ho&&ml.buildup&&ml.lastULD&&ml.ctrlULD;
+if(allDone&&f.status==='prevu')f.status='encours';
+save();renderList();
+if(SID===flightId)refreshPanel(flightId);
+}
+
+// ═══ CHAT / COMMUNICATION ═══
+function renderChatSection(f){
+var msgs=f.messages||[];
+var destColors={all:'all',ALL:'all',PPD:'ppd',MAG:'mag',PTA:'pta',PTO:'pto',GFC:'gfc'};
+var msgsHTML='';
+var visibleMsgs=msgs.filter(function(m){return isForMe(m)});
+if(visibleMsgs.length){
+  msgsHTML=visibleMsgs.map(function(m,i){
+    var realIdx=msgs.indexOf(m);
+    var prioIcon=m.prio==='urgent'?'🚨':m.prio==='warning'?'⚠️':'ℹ️';
+    var timeStr=m.time||'';
+    var dests=getMsgDests(m.dest);var destTag=dests.map(function(d){return'<span class="chat-dest-tag '+(destColors[d]||'all')+'">→ '+d+'</span>'}).join('');
+    var ackBtn='';
+    if(m.prio==='urgent'||m.prio==='warning'){
+      if(m.seen){
+        ackBtn='<div class="chat-msg-ack seen">✓ Vu par '+(m.seenBy||'—')+' à '+(m.seenAt||'')+'</div>';
+      }else{
+        ackBtn='<div class="chat-msg-ack" onclick="ackMsg('+f.id+','+realIdx+')">✓ Marquer comme vu</div>';
+      }
+    }
+    var seenClass=(m.seen&&m.prio==='urgent')?' seen-msg':'';
+    return'<div class="chat-msg '+m.prio+seenClass+' for-me"><button class="chat-msg-delete" onclick="deleteMsg('+f.id+','+realIdx+')" title="Supprimer">✕</button><div class="chat-msg-header"><div><span class="chat-msg-author">'+prioIcon+' '+(m.author||'Opérateur')+'</span>'+destTag+'<span class="chat-msg-prio '+m.prio+'">'+(m.prio==='urgent'?'URGENT':m.prio==='warning'?'WARNING':'INFO')+'</span></div><span class="chat-msg-time">'+timeStr+'</span></div><div class="chat-msg-text">'+m.text+'</div>'+ackBtn+'</div>';
+  }).join('');
+}else{
+  msgsHTML='<div style="text-align:center;padding:12px;color:var(--text3);font-size:11px;">Aucun message pour votre service</div>';
+}
+return'<div class="sp-chat-section"><div class="sp-chat-title">💬 Communication <span style="font-size:10px;font-weight:500;color:var(--text3);">('+visibleMsgs.length+')</span></div><div class="chat-messages" id="chat-msgs-'+f.id+'">'+msgsHTML+'</div><div class="chat-input-area"><div class="chat-input-row"><input class="chat-author-input" id="chat-author-'+f.id+'" placeholder="Nom" value="'+userProfile.name+'"><select class="chat-prio-select" id="chat-prio-'+f.id+'"><option value="info">ℹ️ Info</option><option value="warning">⚠️ Warning</option><option value="urgent">🚨 Urgent</option></select></div><div class="chat-input-row" style="flex-wrap:wrap;gap:4px">'+buildDestGroup('cdg-'+f.id)+'</div><div class="chat-input-row"><textarea class="chat-input" id="chat-text-'+f.id+'" placeholder="Écrire un message..." onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendMsg('+f.id+')}"></textarea><button class="chat-send-btn" onclick="sendMsg('+f.id+')">Envoyer</button></div></div></div>';
+}
+
+function sendMsg(flightId){
+var f=flights.find(function(x){return x.id===flightId});if(!f)return;
+var textEl=document.getElementById('chat-text-'+flightId);
+var authorEl=document.getElementById('chat-author-'+flightId);
+var prioEl=document.getElementById('chat-prio-'+flightId);
+var text=(textEl.value||'').trim();if(!text)return;
+var author=(authorEl.value||'').trim()||userProfile.name;
+var prio=prioEl.value||'info';
+var dest=getDestFromGroup('cdg-'+flightId);
+var now=new Date();
+var timeStr=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+if(!f.messages)f.messages=[];
+f.messages.push({text:text,author:author,prio:prio,dest:dest,time:timeStr,seen:false});
+if(prio==='urgent'&&f.status!=='cloture')f.status='alerte';
+save();textEl.value='';
+// Refresh panel without toggling it
+refreshPanel(flightId);renderList();
+setTimeout(function(){var el=document.getElementById('chat-msgs-'+flightId);if(el)el.scrollTop=el.scrollHeight},100);
+}
+
+function ackMsg(flightId,msgIdx){
+var f=flights.find(function(x){return x.id===flightId});if(!f||!f.messages||!f.messages[msgIdx])return;
+var authorEl=document.getElementById('chat-author-'+flightId);
+var seenBy=(authorEl?authorEl.value:'')||userProfile.name;
+var now=new Date();
+var seenAt=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+f.messages[msgIdx].seen=true;
+f.messages[msgIdx].seenBy=seenBy;
+f.messages[msgIdx].seenAt=seenAt;
+// Check if all urgent messages are now seen → remove alerte
+var hasUnseenUrgent=f.messages.some(function(m){return m.prio==='urgent'&&!m.seen});
+if(!hasUnseenUrgent&&f.status==='alerte'){
+  f.status=f.realTonnage>0?'cloture':'encours';
+}
+save();refreshPanel(flightId);renderList();
+}
+
+function markAllSeen(flightId){
+var f=flights.find(function(x){return x.id===flightId});if(!f||!f.messages)return;
+var changed=false;
+var now=new Date();var seenAt=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+f.messages.forEach(function(m){if(!m.seen&&isForMe(m)){m.seen=true;m.seenBy=userProfile.name;m.seenAt=seenAt;changed=true}});
+if(changed){
+  if(f.status==='alerte'){f.status=f.realTonnage>0?'cloture':'encours'}
+  save();renderList();
+}
+}
+
+function refreshPanel(flightId){
+// Rebuild panel content without toggling open/close
+var f=flights.find(function(x){return x.id===flightId});if(!f)return;
+SID=flightId;
+var sp=document.getElementById('side-panel');sp.classList.add('open');
+var pct=f.maxw>0?Math.round(f.tonnage/f.maxw*100):0,bc=pct>90?'var(--red)':pct>70?'var(--amber)':'var(--green)',sl=f.status==='prevu'?'PRÉVU':f.status==='encours'?'EN COURS':f.status==='cloture'?'CLÔTURÉ':'⚠ ALERTE';
+var tULD=(f.palettes||0)+(f.ake||0);
+var sc2=calcScore(f),pH='';
+if(f.realTonnage||f.realULD||f.lta||f.revenue){pH='<div class="sp-perf-section"><div class="sp-perf-title">Performance J+1</div>';if(f.realTonnage&&f.tonnage)pH+=pB('Tonnage',f.realTonnage,f.tonnage,' kg');if(f.realULD&&tULD)pH+=pB('Positions',f.realULD,tULD,' ULD');if(f.lta)pH+='<div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid #ECECEC;margin-top:6px"><span style="font-size:11px;color:var(--text2)">LTA</span><span style="font-size:13px;font-weight:700;color:var(--af-blue2)">'+f.lta+'</span></div>';if(f.revenue)pH+='<div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid #ECECEC"><span style="font-size:11px;color:var(--text2)">Recettes</span><span style="font-size:13px;font-weight:700;color:var(--green)">'+Number(f.revenue).toLocaleString('fr-FR')+' €</span></div>';if(sc2!==null)pH+='<div class="sp-score"><div class="sp-score-val" style="color:'+scC(sc2)+'">'+sc2+'%</div><div class="sp-score-label">Réalisation HO</div></div>';pH+='</div>'}
+var chatHTML = renderChatSection(f);
+sp.innerHTML='<div style="padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:22px;font-weight:700;color:var(--text);font-style:italic">'+f.num+'</div><div style="font-size:11px;color:var(--text3);margin-top:3px">'+f.orig+' → '+f.dest+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><div class="status-badge '+f.status+'" style="font-size:9px">'+sl+'</div><button style="padding:3px 8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text3);cursor:pointer" onclick="closePanel()">✕</button></div></div><div class="sp-body"><div class="sp-info-grid">'+sC('Date',fmtD(f.flightDate),'var(--af-blue2)')+sC('HLD',f.HLD||'—')+sC('Avion',f.actype||'—')+sC('Tonnage prévu',(f.tonnage/1000).toFixed(2)+' t','var(--text)')+sC('Max soute',f.maxw?(f.maxw/1000).toFixed(0)+' t':'—')+sC('Volume',f.volume?f.volume+' m³':'—')+sC('PAL dispo',f.palettes||'—')+sC('AKE dispo',f.ake||'—','var(--cyan)')+'</div>'+chatHTML+pH+'<div class="sp-actions" style="margin-top:12px"><button class="sp-action-btn edit" onclick="openEdit('+f.id+')">✏ Modifier</button><button class="sp-action-btn detail" onclick="openDetail('+f.id+')">📦 Détail</button><button class="sp-action-btn delete" onclick="openDel('+f.id+')">🗑</button></div></div>';
+}
+
+function deleteMsg(flightId,msgIdx){
+var f=flights.find(function(x){return x.id===flightId});if(!f||!f.messages)return;
+f.messages.splice(msgIdx,1);
+var hasUnseenUrgent=f.messages.some(function(m){return m.prio==='urgent'&&!m.seen});
+if(!hasUnseenUrgent&&f.status==='alerte'){
+  f.status=f.realTonnage>0?'cloture':'encours';
+}
+save();refreshPanel(flightId);renderList();
+}
+
+// ═══ CALENDAR ═══
+function renderCal(){var td=localD(new Date()),f1=new Date(cY,cM,1),ld=new Date(cY,cM+1,0),dm=ld.getDate(),pm=new Date(cY,cM,0).getDate(),ms=(f1.getDay()+6)%7;var bd={};flights.forEach(function(f){if(!f.flightDate)return;if(!bd[f.flightDate])bd[f.flightDate]=[];bd[f.flightDate].push(f)});var cells=[];for(var i=ms-1;i>=0;i--){var dt=new Date(cY,cM-1,pm-i);cells.push({d:pm-i,dt:localD(dt),o:true})}for(var i=1;i<=dm;i++){var dt=new Date(cY,cM,i);cells.push({d:i,dt:localD(dt),o:false})}var rm=7-(cells.length%7);if(rm<7)for(var i=1;i<=rm;i++){var dt=new Date(cY,cM+1,i);cells.push({d:i,dt:localD(dt),o:true})}var dh=['LUN','MAR','MER','JEU','VEN','SAM','DIM'];var ch=cells.map(function(c){var cl='cal-cell';if(c.o)cl+=' other-month';if(c.dt===td)cl+=' today';if(c.dt===cSD)cl+=' selected';var df=bd[c.dt]||[];var dots=df.slice(0,3).map(function(f){return'<div class="cal-flight-dot '+f.status+'">'+f.num+' → '+f.dest+'</div>'}).join('');var more=df.length>3?'<div class="cal-more">+'+(df.length-3)+'</div>':'';return'<div class="'+cl+'" onclick="selCD(\''+c.dt+'\')"><div class="cal-cell-num">'+c.d+'</div>'+dots+more+'</div>'}).join('');var detH='';if(cSD){var df=bd[cSD]||[];var dO=new Date(cSD+'T00:00:00');var dn=DF[dO.getDay()]+' '+dO.getDate()+' '+MO[dO.getMonth()]+' '+dO.getFullYear();detH='<div class="cal-day-detail"><div class="cal-day-detail-title">'+dn+' — '+df.length+' vol'+(df.length>1?'s':'')+'</div>';if(!df.length)detH+='<div style="color:var(--text3);font-size:12px">Aucun vol</div>';else detH+=df.map(function(f){var sl=f.status==='prevu'?'PRÉVU':f.status==='encours'?'EN COURS':f.status==='cloture'?'CLÔTURÉ':'⚠ ALERTE';return'<div class="cal-day-flight" onclick="goFC(\''+f.flightDate+'\','+f.id+')"><div class="status-stripe '+f.status+'" style="height:32px"></div><div style="flex:1"><div style="font-weight:700;font-size:14px">'+f.num+'</div><div style="font-size:11px;color:var(--text3)">'+f.orig+' → '+f.dest+'</div></div><div class="status-badge '+f.status+'" style="font-size:9px">'+sl+'</div></div>'}).join('');detH+='</div>'}document.getElementById('calendar-content').innerHTML='<div style="max-width:1100px;margin:0 auto"><div class="cal-header"><div class="cal-title">'+MO[cM]+' '+cY+'</div><div class="cal-nav"><button class="cal-nav-btn" onclick="calP()">◀</button><button class="cal-today-btn" onclick="calT()">Aujourd\'hui</button><button class="cal-nav-btn" onclick="calN()">▶</button></div></div><div class="cal-grid">'+dh.map(function(d){return'<div class="cal-day-header">'+d+'</div>'}).join('')+ch+'</div>'+detH+'</div>'}
+function selCD(d){cSD=d;renderCal()}function calP(){cM--;if(cM<0){cM=11;cY--}renderCal()}function calN(){cM++;if(cM>11){cM=0;cY++}renderCal()}function calT(){var n=new Date();cM=n.getMonth();cY=n.getFullYear();cSD=localD(n);renderCal()}function goFC(d,id){SD=d;document.getElementById('date-filter').value=d;switchView('flights');setTimeout(function(){selPanel(id)},200)}
+
+// ═══ DASHBOARD ═══
+var DASH_FL=[];
+function renderDash(){
+var dbF=flights; // will be filtered
+var el=document.getElementById('dashboard-content');
+// Get unique destinations
+var dests={};flights.forEach(function(f){if(f.dest)dests[f.dest]=true});var destList=Object.keys(dests).sort();
+var destOpts='<option value="">Toutes</option>'+destList.map(function(d){return'<option>'+d+'</option>'}).join('');
+
+el.innerHTML='<div style="max-width:1200px;margin:0 auto"><div class="db-title">Tableau de bord — Analyse</div><div class="db-sub">'+flights.length+' vols au total</div>'+
+'<div class="db-filters"><div class="db-filter-group"><div class="db-filter-label">Date début</div><input type="date" class="db-filter-input" id="db-from"></div><div class="db-filter-group"><div class="db-filter-label">Date fin</div><input type="date" class="db-filter-input" id="db-to"></div><div class="db-filter-group"><div class="db-filter-label">Destination</div><select class="db-filter-input" id="db-dest">'+destOpts+'</select></div><div class="db-filter-group"><div class="db-filter-label">Remplissage min</div><input type="number" class="db-filter-input" id="db-fill-min" placeholder="0" min="0" max="100" style="width:70px"></div><div class="db-filter-group"><div class="db-filter-label">Remplissage max</div><input type="number" class="db-filter-input" id="db-fill-max" placeholder="100" min="0" max="100" style="width:70px"></div><button class="db-filter-btn" onclick="applyDashFilter()">Filtrer</button><button class="db-filter-reset" onclick="resetDashFilter()">Reset</button></div>'+
+'<div id="db-results"></div></div>';
+renderDashResults(flights)}
+
+function applyDashFilter(){var from=document.getElementById('db-from').value,to=document.getElementById('db-to').value,dest=document.getElementById('db-dest').value,fmin=parseInt(document.getElementById('db-fill-min').value),fmax=parseInt(document.getElementById('db-fill-max').value);
+var f=flights.filter(function(fl){if(from&&fl.flightDate<from)return false;if(to&&fl.flightDate>to)return false;if(dest&&fl.dest!==dest)return false;var pct=fl.maxw>0?Math.round(fl.tonnage/fl.maxw*100):0;if(!isNaN(fmin)&&pct<fmin)return false;if(!isNaN(fmax)&&pct>fmax)return false;return true});
+renderDashResults(f)}
+function resetDashFilter(){document.getElementById('db-from').value='';document.getElementById('db-to').value='';document.getElementById('db-dest').value='';document.getElementById('db-fill-min').value='';document.getElementById('db-fill-max').value='';renderDashResults(flights)}
+
+function renderDashResults(fl){DASH_FL=fl;var t=fl.length;if(!t){document.getElementById('db-results').innerHTML='<div style="text-align:center;padding:40px;color:var(--text3)">Aucun vol ne correspond aux filtres.</div>';return}
+var ec=fl.filter(function(f){return f.status==='encours'}).length,cl=fl.filter(function(f){return f.status==='cloture'}).length,al=fl.filter(function(f){return f.status==='alerte'}).length,pv=fl.filter(function(f){return f.status==='prevu'}).length;
+var tT=fl.reduce(function(s,f){return s+(f.tonnage||0)},0),tRT=fl.reduce(function(s,f){return s+(f.realTonnage||0)},0),tRev=fl.reduce(function(s,f){return s+(f.revenue||0)},0),tLTA=fl.reduce(function(s,f){return s+(f.lta||0)},0);
+// Vols avec positions vides
+var volsAvecVide=fl.filter(function(f){var tU=(f.palettes||0)+(f.ake||0);return tU>0&&f.realULD>0&&f.realULD<tU}).length;
+var volsSansJ1=fl.filter(function(f){return!f.realTonnage}).length;
+var mlfVals=fl.map(calcMLF).filter(function(v){return v!==null});
+var avgMLF=mlfVals.length>0?Math.round(mlfVals.reduce(function(a,b){return a+b},0)/mlfVals.length):null;
+var mlfCol=avgMLF!==null?(avgMLF>=85?'var(--green)':avgMLF>=60?'var(--amber)':'var(--red)'):'var(--text3)';
+var hoScores=fl.map(calcScore).filter(function(v){return v!==null});
+var avgHO=hoScores.length>0?Math.round(hoScores.reduce(function(a,b){return a+b},0)/hoScores.length):null;
+var hoCol=avgHO!==null?(avgHO>=80?'var(--green)':avgHO>=50?'var(--amber)':'var(--red)'):'var(--text3)';
+var allPalLines=fl.reduce(function(acc,f){return acc.concat((f.uldLines||[]).filter(function(u){return u.uld&&u.uld!=='BULK'&&u.uld.substring(0,3)!=='AKE'}));},[]);
+var totPalWt=allPalLines.reduce(function(s,u){return s+(parseFloat(u.pds)||0)},0);
+var totPalVol=allPalLines.reduce(function(s,u){return s+(parseFloat(u.vol)||0)},0);
+var avgPalWt=allPalLines.length>0?Math.round(totPalWt/allPalLines.length):0;
+var avgPalVol=allPalLines.length>0?(totPalVol/allPalLines.length).toFixed(1):'—';
+var allAkeLines=fl.reduce(function(acc,f){return acc.concat((f.uldLines||[]).filter(function(u){return u.uld&&u.uld.substring(0,3)==='AKE'}));},[]);
+var totAkeWt=allAkeLines.reduce(function(s,u){return s+(parseFloat(u.pds)||0)},0);
+var avgAkeWt=allAkeLines.length>0?Math.round(totAkeWt/allAkeLines.length):0;
+var flAkeData=fl.map(function(f){var lines=(f.uldLines||[]).filter(function(u){return u.uld&&u.uld.substring(0,3)==='AKE'});var wt=lines.reduce(function(s,u){return s+(parseFloat(u.pds)||0)},0);return{f:f,avgWt:lines.length>0?Math.round(wt/lines.length):0,cnt:lines.length}}).filter(function(x){return x.cnt>0});
+var byAke=flAkeData.slice().sort(function(a,b){return b.avgWt-a.avgWt});var mxAke=byAke[0]?byAke[0].avgWt:1;
+var tbAke=byAke.slice(0,8).map(function(x){var p=Math.round(x.avgWt/mxAke*100);return'<div class="db-bar-row"><div class="db-bar-label" style="font-size:12px;line-height:1.4;min-width:110px">'+x.f.num+'<br><span style="color:var(--text3);font-size:11px">'+fmtD(x.f.flightDate)+'</span></div><div class="db-bar-track"><div class="db-bar-fill" style="width:'+p+'%;background:var(--amber)"></div></div><div class="db-bar-val">'+x.avgWt+' kg</div></div>'}).join('');
+var flPalData=fl.map(function(f){var lines=(f.uldLines||[]).filter(function(u){return u.uld&&u.uld!=='BULK'&&u.uld.substring(0,3)!=='AKE'});var wt=lines.reduce(function(s,u){return s+(parseFloat(u.pds)||0)},0);var vol=lines.reduce(function(s,u){return s+(parseFloat(u.vol)||0)},0);return{f:f,avgWt:lines.length>0?Math.round(wt/lines.length):0,avgVol:lines.length>0?Math.round(vol*10/lines.length)/10:0,cnt:lines.length}}).filter(function(x){return x.cnt>0});
+var byWt=flPalData.slice().sort(function(a,b){return b.avgWt-a.avgWt});var mxWt=byWt[0]?byWt[0].avgWt:1;
+var tbWt=byWt.slice(0,8).map(function(x){var p=Math.round(x.avgWt/mxWt*100);return'<div class="db-bar-row"><div class="db-bar-label" style="font-size:12px;line-height:1.4;min-width:110px">'+x.f.num+'<br><span style="color:var(--text3);font-size:11px">'+fmtD(x.f.flightDate)+'</span></div><div class="db-bar-track"><div class="db-bar-fill" style="width:'+p+'%;background:var(--cyan)"></div></div><div class="db-bar-val">'+x.avgWt+' kg</div></div>'}).join('');
+var byVol=flPalData.slice().sort(function(a,b){return b.avgVol-a.avgVol});var mxVol=byVol[0]?byVol[0].avgVol:1;
+var tbVol=byVol.slice(0,8).map(function(x){var p=Math.round(x.avgVol/mxVol*100);return'<div class="db-bar-row"><div class="db-bar-label" style="font-size:12px;line-height:1.4;min-width:110px">'+x.f.num+'<br><span style="color:var(--text3);font-size:11px">'+fmtD(x.f.flightDate)+'</span></div><div class="db-bar-track"><div class="db-bar-fill" style="width:'+p+'%;background:var(--af-blue2)"></div></div><div class="db-bar-val">'+x.avgVol+' m³</div></div>'}).join('');
+var noData='<div style="text-align:center;padding:20px;color:var(--text3);font-size:11px">Aucune donnée CLS importée</div>';
+
+
+document.getElementById('db-results').innerHTML=
+'<div class="db-kpi-row" style="margin-top:16px">'+kp('Vols',t,'','var(--text)')+kp('Tonnage prévu',(tT/1000).toFixed(1),'tonnes','var(--text)')+kp('Tonnage réel',(tRT/1000).toFixed(1),'tonnes','var(--cyan)')+kp('MLF',avgMLF!==null?avgMLF+'%':'—','',mlfCol)+kp('Taux réa. HO',avgHO!==null?avgHO+'%':'—','',hoCol)+kp('Recettes',tRev?Number(tRev).toLocaleString('fr-FR')+'€':'—','','var(--green)')+'</div>'+
+'<div class="db-kpi-row">'+kp('Vols pos. vides',volsAvecVide,'vols','var(--af-red)','vide')+kp('Poids moy. / palette',avgPalWt?avgPalWt+' kg':'—','','var(--cyan)')+kp('Volume moy. / palette',avgPalVol!=='—'?avgPalVol+' m³':'—','','var(--af-blue2)')+kp('Poids moy. / AKE',avgAkeWt?avgAkeWt+' kg':'—','','var(--amber)')+'</div>'+
+'<div id="db-list-container" style="margin-bottom:4px"></div>'+
+'<div class="db-grid">'+
+'<div class="db-card full"><div class="db-card-title">Palettes — Poids &amp; Volume moyens par vol</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:24px"><div><div style="font-size:10px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Poids moyen / palette</div>'+(tbWt||noData)+'</div><div><div style="font-size:10px;font-weight:700;color:var(--af-blue2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Volume moyen / palette</div>'+(tbVol||noData)+'</div></div></div>'+
+'<div class="db-card full"><div class="db-card-title">AKE — Poids moyen par vol</div>'+(tbAke||noData)+'</div>'+
+'</div>'}
+function kp(l,v,s,c,filt){return'<div class="db-kpi"'+(filt?' onclick="showDashList(\''+filt+'\')" style="cursor:pointer" title="Cliquer pour voir les vols"':'')+'><div class="db-kpi-accent" style="background:'+c+'"></div><div class="db-kpi-label">'+l+(filt?' <span style="font-size:8px;opacity:.45">▼</span>':'')+'</div><div class="db-kpi-val" style="color:'+c+'">'+v+'</div>'+(s?'<div class="db-kpi-sub">'+s+'</div>':'')+'</div>'}
+
+function showDashList(type){
+var el=document.getElementById('db-list-container');if(!el)return;
+if(el.getAttribute('data-active')===type){el.innerHTML='';el.removeAttribute('data-active');return}
+var titles={vide:'Vols avec positions vides',sansj1:'Vols sans données J+1',alerte:'Vols en alerte',encours:'Vols en cours',cloture:'Vols clôturés',prevu:'Vols prévus'};
+var filtered=DASH_FL.filter(function(f){
+  if(type==='vide'){var tU=(f.palettes||0)+(f.ake||0);return tU>0&&f.realULD>0&&f.realULD<tU}
+  if(type==='sansj1')return!f.realTonnage;
+  if(type==='alerte')return f.status==='alerte';
+  if(type==='encours')return f.status==='encours';
+  if(type==='cloture')return f.status==='cloture';
+  if(type==='prevu')return f.status==='prevu';
+  return true;
+});
+el.setAttribute('data-active',type);
+if(!filtered.length){el.innerHTML='<div style="margin-bottom:16px;padding:12px 16px;color:var(--text3);font-size:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px">Aucun vol dans cette catégorie.</div>';return}
+var rows=filtered.map(function(f){
+  var tU=(f.palettes||0)+(f.ake||0);
+  var vide=type==='vide'&&tU>0?tU-f.realULD:null;
+  var sl=f.status==='prevu'?'PRÉVU':f.status==='encours'?'EN COURS':f.status==='cloture'?'CLÔTURÉ':'⚠ ALERTE';
+  return'<tr style="border-bottom:1px solid var(--border);cursor:pointer" onmouseenter="this.style.background=\'var(--surface2)\'" onmouseleave="this.style.background=\'\'" onclick="openDetail('+f.id+')">'+
+    '<td style="padding:6px 10px;font-weight:700;color:var(--af-blue2);font-style:italic">'+f.num+'</td>'+
+    '<td style="padding:6px 10px;font-size:11px">'+f.orig+' → '+f.dest+'</td>'+
+    '<td style="padding:6px 10px;font-size:11px">'+fmtD(f.flightDate)+'</td>'+
+    '<td style="padding:6px 10px"><span class="status-badge '+f.status+'" style="font-size:9px">'+sl+'</span></td>'+
+    (vide!==null?'<td style="padding:6px 10px;font-size:11px;color:var(--af-red);font-weight:700">'+vide+' pos. vide'+(vide>1?'s':'')+'</td>':'')+
+  '</tr>';
+}).join('');
+var extraTH=type==='vide'?'<th style="color:#fff;padding:6px 10px;text-align:left;font-size:10px">Pos. vides</th>':'';
+el.innerHTML='<div style="margin-bottom:16px;border:1px solid var(--border);border-radius:10px;overflow:hidden">'+
+  '<div style="padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">'+
+    '<div style="font-size:12px;font-weight:700;color:var(--text)">'+(titles[type]||'Vols')+' — '+filtered.length+' vol'+(filtered.length>1?'s':'')+'</div>'+
+    '<button onclick="document.getElementById(\'db-list-container\').innerHTML=\'\';document.getElementById(\'db-list-container\').removeAttribute(\'data-active\')" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;line-height:1">✕</button>'+
+  '</div>'+
+  '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">'+
+    '<thead><tr style="background:var(--af-blue2)"><th style="color:#fff;padding:6px 10px;text-align:left;font-size:10px">Vol</th><th style="color:#fff;padding:6px 10px;text-align:left;font-size:10px">Route</th><th style="color:#fff;padding:6px 10px;text-align:left;font-size:10px">Date</th><th style="color:#fff;padding:6px 10px;text-align:left;font-size:10px">Statut</th>'+extraTH+'</tr></thead>'+
+    '<tbody>'+rows+'</tbody>'+
+  '</table></div>'+
+'</div>';
+el.scrollIntoView({behavior:'smooth',block:'nearest'})
+}
+
+// ═══ BIG ═══
+function renderBIG(){
+var el=document.getElementById('big-content');if(!el)return;
+var now=new Date(),nowT=now.getTime();
+var pad=function(n){return String(n).padStart(2,'0')};
+var fmtHM=function(d){return pad(d.getHours())+':'+pad(d.getMinutes())};
+var fmtRemain=function(ms){if(ms<=0)return'maintenant';var dd=Math.floor(ms/86400000),hh=Math.floor((ms%86400000)/3600000),mm=Math.floor((ms%3600000)/60000);return(dd?dd+'j ':'')+(hh?hh+'h ':'')+mm+'min'};
+var syncBadge=bigsSynced
+  ?'<span style="font-size:11px;font-weight:500;margin-left:8px;padding:2px 8px;border-radius:10px;background:rgba(45,184,122,.12);color:var(--green)">🟢 Supabase</span>'
+  :'<span style="font-size:11px;font-weight:500;margin-left:8px;padding:2px 8px;border-radius:10px;background:rgba(201,168,76,.12);color:var(--amber)">⚠ Local — créer la table bigs</span>';
+var header='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">'+
+  '<div><div class="dash-title">BIG — Transit CDG '+syncBadge+'</div>'+
+  '<div style="font-size:12px;color:var(--text3);margin-top:2px">'+bigs.length+' transit'+(bigs.length>1?'s':'')+'</div></div>'+
+  '<button class="add-btn" onclick="openBIGModal()">+ Nouveau transit</button></div>';
+if(!bigs.length){el.innerHTML=header+'<div class="empty-state"><div class="icon">🔄</div><div>Aucun transit BIG enregistré</div><div style="font-size:11px;margin-top:6px">Ajoutez des transits pour visualiser le Gantt en temps réel</div></div>';return}
+var minT=Infinity,maxT=-Infinity;
+bigs.forEach(function(b){var a=new Date(b.arrival).getTime(),d=new Date(b.departure).getTime();if(a<minT)minT=a;if(d>maxT)maxT=d});
+minT=Math.min(minT,nowT)-2*3600000;maxT=Math.max(maxT,nowT)+2*3600000;
+var range=maxT-minT;if(range<8*3600000){var mid=(minT+maxT)/2;minT=mid-4*3600000;maxT=mid+4*3600000;range=8*3600000}
+var nowPct=Math.max(0,Math.min(100,(nowT-minT)/range*100));
+var hrMs=3600000,rangeH=range/hrMs,step=rangeH<=12?1:rangeH<=24?2:rangeH<=48?4:6;
+var firstT=Math.ceil(minT/(step*hrMs))*(step*hrMs);
+var ruler='',grid='';
+for(var t=firstT;t<=maxT;t+=step*hrMs){
+  var p=(t-minT)/range*100;if(p<0||p>100)continue;
+  var dt=new Date(t);
+  var lbl=dt.getHours()===0?'<span style="color:var(--af-blue2)">'+dt.getDate()+'/'+pad(dt.getMonth()+1)+'</span>':pad(dt.getHours())+':00';
+  ruler+='<div style="position:absolute;bottom:5px;left:'+p.toFixed(1)+'%;transform:translateX(-50%);font-size:9px;font-weight:700;color:var(--text3);white-space:nowrap;pointer-events:none">'+lbl+'</div>'+
+    '<div style="position:absolute;top:0;left:'+p.toFixed(1)+'%;height:100%;width:1px;background:var(--border2);pointer-events:none"></div>';
+  grid+='<div style="position:absolute;top:0;bottom:0;left:'+p.toFixed(1)+'%;width:1px;background:var(--border);opacity:.5;pointer-events:none"></div>';
+}
+var sorted=bigs.slice().sort(function(a,b){return new Date(a.arrival)-new Date(b.arrival)});
+var rows=sorted.map(function(b){
+  var aT=new Date(b.arrival).getTime(),dT=new Date(b.departure).getTime();
+  var bl=Math.max(0,(aT-minT)/range*100),bw=Math.max(.3,(dT-aT)/range*100);
+  if(bl+bw>100)bw=100-bl;
+  var status=nowT<aT?'prevu':nowT<dT?'transit':'parti';
+  var color=status==='prevu'?'#7B8BA3':status==='transit'?'var(--amber)':'var(--green)';
+  var slabel=status==='prevu'?'PRÉVU':status==='transit'?'EN TRANSIT':'PARTI';
+  var rem='';
+  if(status==='prevu'){rem=' · Arr. dans '+fmtRemain(aT-nowT)}
+  else if(status==='transit'){var left=dT-nowT;if(left<3600000){color='var(--red)';status='late';slabel='URGENT'}rem=' · Départ dans '+fmtRemain(left)}
+  return '<div style="display:flex;border-bottom:1px solid var(--border)">'+
+    '<div class="gantt-label-cell">'+
+      '<div style="font-size:12px;font-weight:700;color:var(--text)">'+b.lta+'</div>'+
+      '<div style="font-size:10px;color:var(--text3);margin-top:1px">'+b.flightIn+(b.dest?' → '+b.dest:'')+'</div>'+
+      '<div style="font-size:10px;color:var(--text3)">ARR '+fmtHM(new Date(b.arrival))+' · DEP '+fmtHM(new Date(b.departure))+'</div>'+
+      '<span class="big-status '+status+'">'+slabel+rem+'</span>'+
+      '<div class="big-row-btns">'+
+        '<button class="big-edit-btn" onclick="editBIG('+b.id+')" title="Modifier">✏</button>'+
+        '<button class="big-del-btn" onclick="delBIG('+b.id+')" title="Supprimer">✕</button>'+
+      '</div>'+
+    '</div>'+
+    '<div style="flex:1;position:relative;min-height:52px;overflow:hidden">'+grid+
+      '<div class="gantt-bar" style="left:'+bl.toFixed(1)+'%;width:'+bw.toFixed(1)+'%;background:'+color+'">'+(bw>4?b.lta:'')+'</div>'+
+    '</div></div>';
+}).join('');
+var byFlight={};
+sorted.forEach(function(b){var fn=b.flightIn||'—';if(!byFlight[fn])byFlight[fn]={dests:[],items:[]};byFlight[fn].items.push(b);if(b.dest&&byFlight[fn].dests.indexOf(b.dest)===-1)byFlight[fn].dests.push(b.dest)});
+var sumCards=Object.keys(byFlight).sort().map(function(fn){
+  var grp=byFlight[fn];
+  var stList=grp.items.map(function(b){var aT=new Date(b.arrival).getTime(),dT=new Date(b.departure).getTime();return nowT<aT?'prevu':nowT<dT?(dT-nowT<3600000?'late':'transit'):'parti'});
+  var worst=stList.indexOf('late')>=0?'late':stList.indexOf('transit')>=0?'transit':stList.indexOf('prevu')>=0?'prevu':'parti';
+  var ac=worst==='late'?'var(--red)':worst==='transit'?'var(--amber)':worst==='prevu'?'#7B8BA3':'var(--green)';
+  var scMap={late:'var(--red)',transit:'var(--amber)',prevu:'#7B8BA3',parti:'var(--green)'};
+  var slMap={late:'URGENT',transit:'EN TRANSIT',prevu:'PRÉVU',parti:'PARTI'};
+  var ltaRows=grp.items.map(function(b,i){
+    return '<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border)">'+
+      '<span style="width:7px;height:7px;border-radius:50%;background:'+scMap[stList[i]]+';flex-shrink:0;display:inline-block"></span>'+
+      '<span style="font-size:11px;font-weight:600;color:var(--text);flex:1">'+b.lta+'</span>'+
+      (b.dest?'<span style="font-size:10px;color:var(--text3)">→ '+b.dest+'</span>':'')+
+      '<span style="font-size:9px;font-weight:700;color:'+scMap[stList[i]]+'">'+slMap[stList[i]]+'</span>'+
+    '</div>';
+  }).join('');
+  var depRaw=grp.items[0].departure?grp.items[0].departure.split('T')[0]:'';
+  var depD=depRaw?new Date(depRaw+'T00:00:00'):null;
+  var depStr=depD?String(depD.getDate()).padStart(2,'0')+' '+MS[depD.getMonth()]:'';
+  var destStr=grp.dests.length?grp.dests.join(' / '):'';
+  var titleParts=[fn];if(destStr)titleParts.push(destStr);if(depStr)titleParts.push(depStr);
+  return '<div style="background:var(--bg2);border:1.5px solid var(--border);border-top:3px solid '+ac+';border-radius:10px;padding:14px 16px;flex:1;min-width:200px;max-width:300px">'+
+    '<div style="font-size:15px;font-weight:800;color:var(--text);letter-spacing:.3px;margin-bottom:6px">'+titleParts.join(' — ')+'</div>'+
+    '<div style="font-size:10px;color:var(--text3);margin-bottom:10px">'+grp.items.length+' LTA</div>'+
+    ltaRows+'</div>';
+}).join('');
+var summary='<div style="margin-bottom:20px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);margin-bottom:10px">Récapitulatif par vol</div>'+
+  '<div style="display:flex;gap:12px;flex-wrap:wrap">'+sumCards+'</div></div>';
+el.innerHTML=header+summary+'<div class="big-gantt-wrap">'+
+  '<div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">'+
+    '<div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Suivi Gantt — Temps réel</div>'+
+    '<div style="font-size:11px;color:var(--text3)">Actualisation toutes les 60s</div></div>'+
+  '<div style="display:flex;height:38px;border-bottom:2px solid var(--border);background:var(--surface)">'+
+    '<div style="width:220px;min-width:220px;border-right:1px solid var(--border);display:flex;align-items:flex-end;padding:0 14px 7px;font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px">LTA / Vol</div>'+
+    '<div style="flex:1;position:relative;overflow:hidden">'+ruler+
+      '<div style="position:absolute;top:4px;left:'+nowPct.toFixed(1)+'%;transform:translateX(-50%);font-size:8px;font-weight:800;color:var(--af-red);background:var(--surface);padding:1px 5px;border-radius:3px;white-space:nowrap;z-index:5">▼ NOW</div>'+
+    '</div></div>'+
+  '<div style="position:relative">'+
+    '<div style="position:absolute;top:0;bottom:0;left:'+nowPct.toFixed(1)+'%;width:2px;background:var(--af-red);opacity:.6;z-index:10;pointer-events:none"></div>'+
+    rows+'</div></div>';
+}
+function openBIGModal(){
+bigEditID=null;
+var n=new Date(),pad2=function(x){return String(x).padStart(2,'0')};
+var s=n.getFullYear()+'-'+pad2(n.getMonth()+1)+'-'+pad2(n.getDate())+'T'+pad2(n.getHours())+':'+pad2(n.getMinutes());
+document.getElementById('big-flightIn').value='';document.getElementById('big-dest').value='';document.getElementById('big-lta').value='';
+document.getElementById('big-arrival').value=s;document.getElementById('big-departure').value=s;
+document.querySelector('#big-modal .modal-title').textContent='🔄 Nouveau transit BIG';
+document.querySelector('#big-modal .btn-primary').textContent='Ajouter';
+document.getElementById('big-modal').classList.add('open');
+setTimeout(function(){document.getElementById('big-lta').focus()},100);
+}
+function editBIG(id){
+var b=bigs.find(function(x){return x.id===id});if(!b)return;
+bigEditID=id;
+document.getElementById('big-flightIn').value=b.flightIn||'';
+document.getElementById('big-dest').value=b.dest||'';
+document.getElementById('big-lta').value=b.lta||'';
+document.getElementById('big-arrival').value=b.arrival||'';
+document.getElementById('big-departure').value=b.departure||'';
+document.querySelector('#big-modal .modal-title').textContent='✏ Modifier le transit';
+document.querySelector('#big-modal .btn-primary').textContent='Modifier';
+document.getElementById('big-modal').classList.add('open');
+setTimeout(function(){document.getElementById('big-departure').focus()},100);
+}
+function closeBIGModal(){bigEditID=null;document.getElementById('big-modal').classList.remove('open')}
+function addBIG(){
+var fi=document.getElementById('big-flightIn').value.trim().toUpperCase();
+var ds=document.getElementById('big-dest').value.trim().toUpperCase();
+var lta=document.getElementById('big-lta').value.trim();
+var arr=document.getElementById('big-arrival').value;
+var dep=document.getElementById('big-departure').value;
+if(!lta||!arr||!dep){alert('Les champs N° LTA, Arrivée CDG et Départ CDG sont obligatoires');return}
+if(new Date(dep)<=new Date(arr)){alert('La date de départ doit être postérieure à l\'arrivée');return}
+if(bigEditID!==null){
+  var idx=bigs.findIndex(function(b){return b.id===bigEditID});
+  if(idx>=0)bigs[idx]={id:bigEditID,flightIn:fi,dest:ds,lta:lta,arrival:arr,departure:dep};
+}else{
+  bigs.push({id:NBID++,flightIn:fi,dest:ds,lta:lta,arrival:arr,departure:dep});
+}
+save();closeBIGModal();renderBIG();
+}
+function delBIG(id){if(!confirm('Supprimer ce transit ?'))return;bigs=bigs.filter(function(b){return b.id!==id});save();renderBIG()}
+
+// Init is handled by doConnect() which is called automatically if config exists
+
+</script>
+</div><!-- /app-container -->
+</body>
+</html>
+
